@@ -1,35 +1,21 @@
 /* ************************************************************************************ */
 /*                                                                                      */
-/*  File:       main.cpp                                                                */
-/*  Purpose:    Main source file and the starting point of the application              */
+/*  File:       config.hpp                                                              */
+/*  Purpose:    Configuration values used in the application                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
 /*  Updated:    2026/01/26                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
-#include "raylib.h"
-#include "Application.hpp"
-#include <iostream>
+#ifndef CONFIG_H
+#define CONFIG_H
 
-int main()
+namespace config
 {
-    SetTraceLogLevel(LOG_NONE);
-
-    Application app;
-
-    app.init();
-
-    while (!WindowShouldClose())
-    {
-        BeginDrawing();
-        
-        ClearBackground(BLACK);
-        DrawFPS(200, 200);
-
-        EndDrawing();
-    }
-
-    CloseWindow();
-
-    return EXIT_SUCCESS;
+    constexpr const char* title = "pathfinding";
+    constexpr int fps = 60;
+    constexpr int defaultWidth = 800;
+    constexpr int defaultHeight = 600;
 }
+
+#endif

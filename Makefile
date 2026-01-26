@@ -1,17 +1,24 @@
-# **************************************************************************** #
-#                                                                              #
-#   File:       Makefile                                                       #
-#   Purpose:    Main compilation file of the program                           #
-#   Author:     barlukh (Boris Gazur)                                          #
-#   Updated:    2026/01/26                                                     #
-#                                                                              #
-# **************************************************************************** #
+# ************************************************************************************** #
+#                                                                                        #
+#   File:       Makefile                                                                 #
+#   Purpose:    Main compilation file of the application                                 #
+#   Author:     barlukh (Boris Gazur)                                                    #
+#   Updated:    2026/01/26                                                               #
+#                                                                                        #
+# ************************************************************************************** #
 
 NAME	=	pathfinding
 
 CC		=	g++
 CFLAGS	=	-Wall -Werror -Wextra -O0 -std=c++17 -g
-LFLAGS	=	-lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -flto -fopenmp
+LFLAGS	=	-lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+VGFLAGS	=	--show-leak-kinds=all \
+			--show-reachable=yes \
+			--leak-check=full \
+			--track-origins=yes \
+			--undef-value-errors=yes \
+			--track-fds=yes \
+			--suppressions=vg.supp
 RM		=	rm -rf
 
 DIR_LIB	=	lib
@@ -54,4 +61,7 @@ re: fclean all
 run: $(NAME)
 	./$(NAME)
 
-.PHONY: all clean fclean prepare_dirs re run
+valgrind: $(NAME)
+	valgrind $(VGFLAGS) ./$(NAME)
+
+.PHONY: all clean fclean prepare_dirs re run valgrind

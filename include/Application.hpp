@@ -1,19 +1,32 @@
 /* ************************************************************************************ */
 /*                                                                                      */
-/*  File:       constants.cpp                                                           */
-/*  Purpose:    Constants used in the program                                           */
+/*  File:       Application.hpp                                                         */
+/*  Purpose:    Header file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
 /*  Updated:    2026/01/26                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef APPLICATION_H
+#define APPLICATION_H
 
-namespace constants
+class Application
 {
-    inline constexpr int success = 1;
-    inline constexpr int failure = 0;
-}
+    private:
+        int screenWidth;
+        int screenHeight;
+
+    public:
+        enum class State
+        {
+            success,
+            failure
+        };
+
+        Application();
+        ~Application();
+
+        Application::State init();
+};
 
 #endif
