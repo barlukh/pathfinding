@@ -1,0 +1,8 @@
+# VS Code configuration
+.vscode
+
+# Object files
+obj
+
+# Executable
+pathfinding
