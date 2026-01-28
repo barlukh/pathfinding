@@ -1,40 +1,35 @@
 /* ************************************************************************************ */
 /*                                                                                      */
-/*  File:       Application.hpp                                                         */
-/*  Purpose:    Header file for the Class Application                                   */
+/*  File:       Grid.hpp                                                                */
+/*  Purpose:    Header file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
 /*  Updated:    2026/01/28                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
-#ifndef APPLICATION_HPP
-#define APPLICATION_HPP
+#ifndef GRID_HPP
+#define GRID_HPP
 
-#include "Grid.hpp"
+#include <vector>
 
 
-class Application
+class Grid
 {
     private:
-        bool windowInitialized = false;
-        Grid grid;
+        float gridCellSize = 0.0f;
 
     public:
-        enum class State
-        {
-            SUCCESS,
-            FAILURE
-        };
-
         // Constructors & Destructors
-        Application();
-        Application(const Application& other) = delete;
-        Application& operator=(const Application& other) = delete;
-        ~Application();
+        Grid() = default;
+        Grid(const Grid& other) = delete;
+        Grid& operator=(const Grid& other) = delete;
+        ~Grid() = default;
+
+        // Getters & Setters
+        void setGridCellSize(int windowHeight);
 
         // Member Functions
-        Application::State init();
-        void run();
+        void DrawGrid();
 };
 
 #endif
