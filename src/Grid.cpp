@@ -21,7 +21,7 @@ static void DrawGridLines(float gridCellSize);
 
 void Grid::setGridCellSize(int windowHeight)
 {
-    gridCellSize = (static_cast<float>(windowHeight - conf::gridPad) / conf::gridCellsY);
+    _gridCellSize = (static_cast<float>(windowHeight - conf::gridPad) / conf::gridCellsY);
 }
 
 
@@ -31,8 +31,8 @@ void Grid::setGridCellSize(int windowHeight)
 
 void Grid::DrawGrid()
 {
-    DrawGridBackRectanlge(this->gridCellSize);
-    DrawGridLines(this->gridCellSize);
+    DrawGridBackRectanlge(this->_gridCellSize);
+    DrawGridLines(this->_gridCellSize);
 }
 
 

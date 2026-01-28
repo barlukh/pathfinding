@@ -20,6 +20,7 @@
 //----------------------------------------------------------------------------------------
 
 Application::Application()
+:   _windowInitialized(false)
 {
     SetTraceLogLevel(LOG_NONE);
     SetTargetFPS(60);
@@ -27,7 +28,7 @@ Application::Application()
 
 Application::~Application()
 {
-    if (windowInitialized)
+    if (_windowInitialized)
     {
         CloseWindow();
     }
@@ -57,9 +58,9 @@ Application::State Application::init()
 
     SetWindowSize(windowWidth, windowHeight);
     SetWindowPosition(windowPosX, windowPosY);
-    grid.setGridCellSize(windowHeight);
+    _grid.setGridCellSize(windowHeight);
 
-    windowInitialized = true;
+    _windowInitialized = true;
 
     return State::SUCCESS;
 }
@@ -72,7 +73,7 @@ void Application::run()
 
         ClearBackground(RAYWHITE);
 
-        grid.DrawGrid();
+        _grid.DrawGrid();
 
         EndDrawing();
     }

@@ -1,40 +1,38 @@
 /* ************************************************************************************ */
 /*                                                                                      */
-/*  File:       Application.hpp                                                         */
-/*  Purpose:    Header file for the Class Application                                   */
+/*  File:       Cell.hpp                                                                */
+/*  Purpose:    Header file for the Class Cell                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
 /*  Updated:    2026/01/28                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
-#ifndef APPLICATION_HPP
-#define APPLICATION_HPP
-
-#include "Grid.hpp"
+#ifndef CELL_HPP
+#define CELL_HPP
 
 
-class Application
+class Cell
 {
     public:
-        enum class State
+        enum class Type
         {
-            SUCCESS,
-            FAILURE
+            PLAYER,
+            EMPTY,
+            OBSTACLE,
+            GOAL
         };
 
         // Constructors & Destructors
-        Application();
-        Application(const Application& other) = delete;
-        Application& operator=(const Application& other) = delete;
-        ~Application();
-
-        // Member Functions
-        Application::State init();
-        void run();
+        Cell() = delete;
+        Cell(float x, float y, Type type);
+        Cell(const Cell& other) = delete;
+        Cell& operator=(const Cell& other) = delete;
+        ~Cell() = default;
 
     private:
-        bool _windowInitialized;
-        Grid _grid;
+        float _x;
+        float _y;
+        Type _type;
 };
 
 #endif

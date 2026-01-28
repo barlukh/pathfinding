@@ -10,14 +10,12 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 
+#include "Cell.hpp"
 #include <vector>
 
 
 class Grid
 {
-    private:
-        float gridCellSize = 0.0f;
-
     public:
         // Constructors & Destructors
         Grid() = default;
@@ -30,6 +28,10 @@ class Grid
 
         // Member Functions
         void DrawGrid();
+
+    private:
+        float _gridCellSize;
+        std::vector<std::vector<Cell>> _cells;
 };
 
 #endif
