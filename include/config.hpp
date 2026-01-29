@@ -17,10 +17,13 @@ namespace conf
 {
     inline constexpr const std::string_view title = "pathfinding";
 
-    constexpr int gridCellsX = 70;
+    constexpr int gridCellsX = 73;
     constexpr int gridCellsY = 50;
     constexpr int gridPad = 60;
     constexpr int halfPad = gridPad / 2;
+
+    constexpr int fps = 60;
+    constexpr bool showFps = true;
 }
 
 #endif

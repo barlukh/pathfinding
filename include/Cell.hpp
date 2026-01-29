@@ -23,15 +23,18 @@ class Cell
         };
 
         // Constructors & Destructors
-        Cell() = delete;
-        Cell(float x, float y, Type type);
-        Cell(const Cell& other) = delete;
-        Cell& operator=(const Cell& other) = delete;
+        Cell() = default;
+        Cell(int x, int y, Type type);
+        Cell(const Cell& other) = default;
+        Cell& operator=(const Cell& other) = default;
         ~Cell() = default;
 
+        // Getters & Setters
+        Type getType() const;
+
     private:
-        float _x;
-        float _y;
+        int _x;
+        int _y;
         Type _type;
 };
 

@@ -18,20 +18,23 @@ class Grid
 {
     public:
         // Constructors & Destructors
-        Grid() = default;
+        Grid() = delete;
+        Grid(int gridCellsX, int gridCellsY);
         Grid(const Grid& other) = delete;
         Grid& operator=(const Grid& other) = delete;
         ~Grid() = default;
 
         // Getters & Setters
         void setGridCellSize(int windowHeight);
+        Cell& at(int x, int y);
 
         // Member Functions
-        void DrawGrid();
+        void drawGrid();
+        void drawCells();
 
     private:
-        float _gridCellSize;
-        std::vector<std::vector<Cell>> _cells;
+        int _gridCellSize;
+        std::vector<Cell> _cells;
 };
 
 #endif

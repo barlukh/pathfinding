@@ -29,7 +29,7 @@ class Application
         ~Application();
 
         // Member Functions
-        Application::State init();
+        State init();
         void run();
 
     private:

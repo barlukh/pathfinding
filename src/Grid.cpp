@@ -10,9 +10,28 @@
 #include "Grid.hpp"
 #include "config.hpp"
 #include "raylib.h"
+#include <vector>
 
-static void DrawGridBackRectanlge(float gridCellSize);
-static void DrawGridLines(float gridCellSize);
+static void drawGridBackRectanlge(int gridCellSize);
+static void drawGridLines(int gridCellSize);
+
+
+//----------------------------------------------------------------------------------------
+// Constructors & Destructors
+//----------------------------------------------------------------------------------------
+
+Grid::Grid(int gridCellsX, int gridCellsY)
+:   _gridCellSize(0),
+    _cells(gridCellsX * gridCellsY)
+{
+    for (int y = 0; y < conf::gridCellsY; y++)
+    {
+        for (int x = 0; x < conf::gridCellsX; x++)
+        {
+            at(x, y) = Cell(x, y, Cell::Type::EMPTY);
+        }
+    }
+}
 
 
 //----------------------------------------------------------------------------------------
@@ -21,7 +40,12 @@ static void DrawGridLines(float gridCellSize);
 
 void Grid::setGridCellSize(int windowHeight)
 {
-    _gridCellSize = (static_cast<float>(windowHeight - conf::gridPad) / conf::gridCellsY);
+    _gridCellSize = (windowHeight - conf::gridPad) / conf::gridCellsY;
+}
+
+Cell& Grid::at(int x, int y)
+{
+    return _cells[y * conf::gridCellsX + x];
 }
 
 
@@ -29,10 +53,48 @@ void Grid::setGridCellSize(int windowHeight)
 // Member Functions
 //----------------------------------------------------------------------------------------
 
-void Grid::DrawGrid()
+void Grid::drawGrid()
 {
-    DrawGridBackRectanlge(this->_gridCellSize);
-    DrawGridLines(this->_gridCellSize);
+    drawGridBackRectanlge(_gridCellSize);
+    drawGridLines(_gridCellSize);
+}
+
+void Grid::drawCells()
+{
+    Color color = BLUE;
+
+    for (int y = 0; y < conf::gridCellsY; y++)
+    {
+        for (int x = 0; x < conf::gridCellsX; x++)
+        {
+            // switch (at(x, y).getType())
+            // {
+            // case Cell::Type::PLAYER:
+            //     color = BLUE;
+            //     break;
+            // case Cell::Type::EMPTY:
+            //     color = RAYWHITE;
+            //     break;
+            // case Cell::Type::OBSTACLE:
+            //     color = BLACK;
+            //     break;
+            // case Cell::Type::GOAL:
+            //     color = YELLOW;
+            //     break;
+            // default:
+            //     color = RAYWHITE;
+            //     break;
+            // }
+
+            DrawRectangle(
+                conf::halfPad + x * _gridCellSize,
+                conf::halfPad + y * _gridCellSize + 1,
+                _gridCellSize - 1,
+                _gridCellSize - 1,
+                color
+            );
+        }
+    }
 }
 
 
@@ -40,7 +102,7 @@ void Grid::DrawGrid()
 // Static Functions
 //----------------------------------------------------------------------------------------
 
-static void DrawGridBackRectanlge(float gridCellSize)
+static void drawGridBackRectanlge(int gridCellSize)
 {
     DrawRectangle(
         conf::halfPad,
@@ -51,9 +113,9 @@ static void DrawGridBackRectanlge(float gridCellSize)
     );
 }
 
-static void DrawGridLines(float gridCellSize)
+static void drawGridLines(int gridCellSize)
 {
-    for (size_t y = 0; y <= conf::gridCellsY; y++)
+    for (int y = 0; y <= conf::gridCellsY; y++)
     {
         DrawLine(
             conf::halfPad,
@@ -64,7 +126,7 @@ static void DrawGridLines(float gridCellSize)
         );
     }
 
-    for (size_t x = 0; x <= conf::gridCellsX; x++)
+    for (int x = 0; x <= conf::gridCellsX; x++)
     {
         DrawLine(
             conf::halfPad + x * gridCellSize,
