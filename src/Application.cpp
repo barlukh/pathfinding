@@ -3,7 +3,7 @@
 /*  File:       Application.cpp                                                         */
 /*  Purpose:    Source file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/01/28                                                              */
+/*  Updated:    2026/01/30                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -81,7 +81,6 @@ void Application::run()
         }
 
         _grid.drawGrid();
-        _grid.drawCells();
 
         EndDrawing();
     }

@@ -3,7 +3,7 @@
 /*  File:       Grid.cpp                                                                */
 /*  Purpose:    Source file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/01/28                                                              */
+/*  Updated:    2026/01/30                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -11,9 +11,6 @@
 #include "config.hpp"
 #include "raylib.h"
 #include <vector>
-
-static void drawGridBackRectanlge(int gridCellSize);
-static void drawGridLines(int gridCellSize);
 
 
 //----------------------------------------------------------------------------------------
@@ -55,85 +52,38 @@ Cell& Grid::at(int x, int y)
 
 void Grid::drawGrid()
 {
-    drawGridBackRectanlge(_gridCellSize);
-    drawGridLines(_gridCellSize);
-}
-
-void Grid::drawCells()
-{
-    Color color = BLUE;
+    Color color;
 
     for (int y = 0; y < conf::gridCellsY; y++)
     {
         for (int x = 0; x < conf::gridCellsX; x++)
         {
-            // switch (at(x, y).getType())
-            // {
-            // case Cell::Type::PLAYER:
-            //     color = BLUE;
-            //     break;
-            // case Cell::Type::EMPTY:
-            //     color = RAYWHITE;
-            //     break;
-            // case Cell::Type::OBSTACLE:
-            //     color = BLACK;
-            //     break;
-            // case Cell::Type::GOAL:
-            //     color = YELLOW;
-            //     break;
-            // default:
-            //     color = RAYWHITE;
-            //     break;
-            // }
+            switch (at(x, y).getType())
+            {
+            case Cell::Type::PLAYER:
+                color = BLUE;
+                break;
+            case Cell::Type::EMPTY:
+                color = LIGHTGRAY;
+                break;
+            case Cell::Type::OBSTACLE:
+                color = BLACK;
+                break;
+            case Cell::Type::GOAL:
+                color = YELLOW;
+                break;
+            default:
+                color = RAYWHITE;
+                break;
+            }
 
-            DrawRectangle(
-                conf::halfPad + x * _gridCellSize,
-                conf::halfPad + y * _gridCellSize + 1,
-                _gridCellSize - 1,
-                _gridCellSize - 1,
-                color
-            );
+            int posX = conf::halfPad + x * _gridCellSize;
+            int posY = conf::halfPad + y * _gridCellSize;
+            int width = _gridCellSize + 1;
+            int height = _gridCellSize + 1;
+
+            DrawRectangle(posX, posY, width, height, color);
+            DrawRectangleLines(posX, posY, width, height, BLACK);
         }
-    }
-}
-
-
-//----------------------------------------------------------------------------------------
-// Static Functions
-//----------------------------------------------------------------------------------------
-
-static void drawGridBackRectanlge(int gridCellSize)
-{
-    DrawRectangle(
-        conf::halfPad,
-        conf::halfPad,
-        conf::gridCellsX * gridCellSize,
-        conf::gridCellsY * gridCellSize,
-        LIGHTGRAY
-    );
-}
-
-static void drawGridLines(int gridCellSize)
-{
-    for (int y = 0; y <= conf::gridCellsY; y++)
-    {
-        DrawLine(
-            conf::halfPad,
-            conf::halfPad + y * gridCellSize,
-            conf::halfPad + conf::gridCellsX * gridCellSize,
-            conf::halfPad + y * gridCellSize,
-            BLACK
-        );
-    }
-
-    for (int x = 0; x <= conf::gridCellsX; x++)
-    {
-        DrawLine(
-            conf::halfPad + x * gridCellSize,
-            conf::halfPad,
-            conf::halfPad + x * gridCellSize,
-            conf::halfPad + conf::gridCellsY * gridCellSize,
-            BLACK
-        );
     }
 }

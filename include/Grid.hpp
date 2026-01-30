@@ -3,7 +3,7 @@
 /*  File:       Grid.hpp                                                                */
 /*  Purpose:    Header file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/01/28                                                              */
+/*  Updated:    2026/01/30                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -30,7 +30,6 @@ class Grid
 
         // Member Functions
         void drawGrid();
-        void drawCells();
 
     private:
         int _gridCellSize;
