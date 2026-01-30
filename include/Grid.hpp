@@ -11,6 +11,7 @@
 #define GRID_HPP
 
 #include "Cell.hpp"
+#include "raylib.h"
 #include <vector>
 
 
@@ -25,15 +26,18 @@ class Grid
         ~Grid() = default;
 
         // Getters & Setters
-        void setGridCellSize(int windowHeight);
+        const Rectangle& getGridRec() const;
+        void setCells(int windowHeight);
+        void setGridRec();
         Cell& at(int x, int y);
 
         // Member Functions
         void drawGrid();
 
     private:
-        int _gridCellSize;
+        float _gridCellSize;
         std::vector<Cell> _cells;
+        Rectangle _gridRec;
 };
 
 #endif

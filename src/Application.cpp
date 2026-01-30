@@ -60,7 +60,8 @@ Application::State Application::init()
     SetWindowSize(windowWidth, windowHeight);
     SetWindowPosition(windowPosX, windowPosY);
 
-    _grid.setGridCellSize(windowHeight);
+    _grid.setCells(windowHeight);
+    _grid.setGridRec();
 
     _windowInitialized = true;
 

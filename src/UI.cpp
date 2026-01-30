@@ -1,13 +1,13 @@
 /* ************************************************************************************ */
 /*                                                                                      */
 /*  File:       Cell.cpp                                                                */
-/*  Purpose:    Source file for the Class Cell                                          */
+/*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
 /*  Updated:    2026/01/30                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
-#include "Cell.hpp"
+#include "UI.hpp"
 #include "raylib.h"
 
 
@@ -15,22 +15,8 @@
 // Constructors & Destructors
 //----------------------------------------------------------------------------------------
 
-Cell::Cell(float posX, float posY, float gridCellSize, Cell::Type type)
-:   _cell{posX, posY, gridCellSize, gridCellSize},
-    _type(type)
+UI::UI()
+:   _playerRec{5, 5, 5, 5},
+    _obstacleRec{20, 5, 5, 5},
+    _goalRec{35, 5, 5, 5}
 {}
-
-
-//----------------------------------------------------------------------------------------
-// Getters & Setters
-//----------------------------------------------------------------------------------------
-
-const Rectangle& Cell::getCell() const
-{
-    return _cell;
-}
-
-Cell::Type Cell::getType() const
-{
-    return _type;
-}
