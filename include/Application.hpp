@@ -3,7 +3,7 @@
 /*  File:       Application.hpp                                                         */
 /*  Purpose:    Header file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/01/28                                                              */
+/*  Updated:    2026/02/01                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -11,6 +11,7 @@
 #define APPLICATION_HPP
 
 #include "Grid.hpp"
+#include "UI.hpp"
 
 
 class Application
@@ -35,6 +36,7 @@ class Application
     private:
         bool _windowInitialized;
         Grid _grid;
+        UI _ui;
 };
 
 #endif

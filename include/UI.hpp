@@ -3,7 +3,7 @@
 /*  File:       UI.hpp                                                                  */
 /*  Purpose:    Header file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/01/30                                                              */
+/*  Updated:    2026/02/01                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -22,10 +22,20 @@ class UI
         UI& operator=(const UI& other) = delete;
         ~UI() = default;
 
+        // Getters & Setters
+        void setTextPos(const Rectangle& gridRec);
+
+        // Member Functions
+        // void detectInput();
+        void drawUI();
+
     private:
-        Rectangle _playerRec;
-        Rectangle _obstacleRec;
-        Rectangle _goalRec;
+        int _optKey;
+        Vector2 _step1Pos;
+        Vector2 _selectPos;
+        Vector2 _optPos;
+        Font _font;
+        float _textSize;
 };
 
 #endif

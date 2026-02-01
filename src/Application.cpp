@@ -3,12 +3,13 @@
 /*  File:       Application.cpp                                                         */
 /*  Purpose:    Source file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/01/30                                                              */
+/*  Updated:    2026/02/01                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
 #include "Application.hpp"
 #include "Grid.hpp"
+#include "UI.hpp"
 #include "config.hpp"
 #include "raylib.h"
 #include <iostream>
@@ -21,7 +22,8 @@
 
 Application::Application()
 :   _windowInitialized(false),
-    _grid(conf::gridCellsX, conf::gridCellsY)
+    _grid(conf::gridCellsX, conf::gridCellsY),
+    _ui()
 {
     SetTraceLogLevel(LOG_NONE);
     SetTargetFPS(conf::fps);
@@ -62,6 +64,7 @@ Application::State Application::init()
 
     _grid.setCells(windowHeight);
     _grid.setGridRec();
+    _ui.setTextPos(_grid.getGridRec());
 
     _windowInitialized = true;
 
@@ -81,7 +84,10 @@ void Application::run()
             DrawFPS(5, 5);
         }
 
+        // _ui.detectInput();
+
         _grid.drawGrid();
+        _ui.drawUI();
 
         EndDrawing();
     }

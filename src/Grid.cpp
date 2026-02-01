@@ -3,7 +3,7 @@
 /*  File:       Grid.cpp                                                                */
 /*  Purpose:    Source file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/01/30                                                              */
+/*  Updated:    2026/02/01                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -104,6 +104,5 @@ void Grid::drawGrid()
         }
     }
 
-    // Draw of outter grid boundary to compensate for double thickness inside grid
     DrawRectangleLinesEx(getGridRec(), 2.0f, DARKGRAY);
 }
