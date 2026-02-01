@@ -68,6 +68,23 @@ Cell& Grid::at(int x, int y)
 // Member Functions
 //----------------------------------------------------------------------------------------
 
+void Grid::paintCells(int optKey)
+{
+    Vector2 mousePos = GetMousePosition();
+
+    int gridX = (mousePos.x - conf::halfPad) / _gridCellSize;
+    int gridY = (mousePos.y - conf::halfPad) / _gridCellSize;
+
+    bool hovering =
+        gridX >= 0 && gridX < conf::gridCellsX &&
+        gridY >= 0 && gridY < conf::gridCellsY;
+
+    if (hovering)
+    {
+        at(gridX, gridY).setType(static_cast<Cell::Type>(optKey - 1));
+    }
+}
+
 void Grid::drawGrid()
 {
     Color color;
@@ -85,14 +102,14 @@ void Grid::drawGrid()
             case Cell::Type::PLAYER:
                 color = BLUE;
                 break;
-            case Cell::Type::EMPTY:
-                color = LIGHTGRAY;
+            case Cell::Type::GOAL:
+                color = YELLOW;
                 break;
             case Cell::Type::OBSTACLE:
                 color = BLACK;
                 break;
-            case Cell::Type::GOAL:
-                color = YELLOW;
+            case Cell::Type::EMPTY:
+                color = LIGHTGRAY;
                 break;
             default:
                 color = RAYWHITE;

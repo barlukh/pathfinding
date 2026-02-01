@@ -84,7 +84,12 @@ void Application::run()
             DrawFPS(5, 5);
         }
 
-        // _ui.detectInput();
+        _ui.detectInput();
+
+        if (_ui.getPaintMode())
+        {
+            _grid.paintCells(_ui.getOptKey());
+        }
 
         _grid.drawGrid();
         _ui.drawUI();

@@ -19,18 +19,29 @@
 //----------------------------------------------------------------------------------------
 
 UI::UI()
-:   _optKey(1),
+:   _paintMode(false),
+    _optKey(1),
     _step1Pos{0, 0},
     _selectPos{0, 0},
     _optPos{0, 0},
     _font(GetFontDefault()),
-    _textSize(0) 
+    _textSize(0)
 {}
 
 
 //----------------------------------------------------------------------------------------
 // Getters & Setters
 //----------------------------------------------------------------------------------------
+
+int UI::getOptKey() const
+{
+    return _optKey;
+}
+
+bool UI::getPaintMode() const
+{
+    return _paintMode;
+}
 
 void UI::setTextPos(const Rectangle& gridRec)
 {
@@ -50,6 +61,35 @@ void UI::setTextPos(const Rectangle& gridRec)
 //----------------------------------------------------------------------------------------
 // Member Functions
 //----------------------------------------------------------------------------------------
+
+void UI::detectInput()
+{
+    if (IsKeyPressed(KEY_ONE))
+    {
+        _optKey = 1;
+    }
+    if (IsKeyPressed(KEY_TWO))
+    {
+        _optKey = 2;
+    }
+    if (IsKeyPressed(KEY_THREE))
+    {
+        _optKey = 3;
+    }
+    if (IsKeyPressed(KEY_FOUR))
+    {
+        _optKey = 4;
+    }
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+    {
+        _paintMode = true;
+    }
+    else
+    {
+        _paintMode = false;
+    }
+}
 
 void UI::drawUI()
 {

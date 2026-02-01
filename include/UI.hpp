@@ -23,13 +23,16 @@ class UI
         ~UI() = default;
 
         // Getters & Setters
+        int getOptKey() const;
+        bool getPaintMode() const;
         void setTextPos(const Rectangle& gridRec);
 
         // Member Functions
-        // void detectInput();
+        void detectInput();
         void drawUI();
 
     private:
+        bool _paintMode;
         int _optKey;
         Vector2 _step1Pos;
         Vector2 _selectPos;

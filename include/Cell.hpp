@@ -19,9 +19,9 @@ class Cell
         enum class Type
         {
             PLAYER,
-            EMPTY,
+            GOAL,
             OBSTACLE,
-            GOAL
+            EMPTY
         };
 
         // Constructors & Destructors
@@ -34,6 +34,7 @@ class Cell
         // Getters & Setters
         const Rectangle& getCell() const;
         Type getType() const;
+        void setType(Type type);
 
     private:
         Rectangle _cell;

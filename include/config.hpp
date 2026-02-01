@@ -27,21 +27,23 @@ namespace conf
     // UI
     constexpr float optScaling = 5.5f;
     constexpr int textScaling = 65;
-    constexpr int offsetYScaling = 7;
+    constexpr int offsetYScaling = 6;
 
     inline constexpr const std::string_view step1 =
         "Step 1:\n\n"
         "Press 1 to place Player\n"
         "Press 2 to place Goal\n"
-        "Press 3 to place Obstacles\n";
+        "Press 3 to place Obstacles\n"
+        "Press 4 to reset Cell\n";
 
     inline constexpr const std::string_view selection =
         "Current selection: ";
 
-    inline constexpr const std::array<std::string_view, 3> opts = {
+    inline constexpr const std::array<std::string_view, 4> opts = {
         "Player",
         "Goal",
-        "Obstacles"
+        "Obstacles",
+        "Empty"
     };
 
     // FPS

@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class Cell                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/01/30                                                              */
+/*  Updated:    2026/02/01                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -33,4 +33,9 @@ const Rectangle& Cell::getCell() const
 Cell::Type Cell::getType() const
 {
     return _type;
+}
+
+void Cell::setType(Type type)
+{
+    _type = type;
 }

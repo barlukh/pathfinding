@@ -32,6 +32,7 @@ class Grid
         Cell& at(int x, int y);
 
         // Member Functions
+        void paintCells(int optKey);
         void drawGrid();
 
     private:
