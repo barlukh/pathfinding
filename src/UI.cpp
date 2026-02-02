@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/01                                                              */
+/*  Updated:    2026/02/02                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -11,8 +11,8 @@
 #include "config.hpp"
 #include "raylib.h"
 #include <array>
-#include <string_view>
 #include <string>
+#include <string_view>
 
 //----------------------------------------------------------------------------------------
 // Constructors & Destructors
@@ -21,11 +21,11 @@
 UI::UI()
 :   _paintMode(false),
     _optKey(1),
+    _textSize(0),
     _step1Pos{0, 0},
     _selectPos{0, 0},
     _optPos{0, 0},
-    _font(GetFontDefault()),
-    _textSize(0)
+    _font(GetFontDefault())
 {}
 
 

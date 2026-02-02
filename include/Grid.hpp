@@ -3,7 +3,7 @@
 /*  File:       Grid.hpp                                                                */
 /*  Purpose:    Header file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/01/30                                                              */
+/*  Updated:    2026/02/02                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -36,6 +36,8 @@ class Grid
         void drawGrid();
 
     private:
+        int _lastGridX;
+        int _lastGridY;
         float _gridCellSize;
         std::vector<Cell> _cells;
         Rectangle _gridRec;

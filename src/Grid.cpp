@@ -3,13 +3,14 @@
 /*  File:       Grid.cpp                                                                */
 /*  Purpose:    Source file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/01                                                              */
+/*  Updated:    2026/02/02                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
 #include "Grid.hpp"
 #include "config.hpp"
 #include "raylib.h"
+#include <cstdlib>
 #include <vector>
 
 
@@ -18,7 +19,9 @@
 //----------------------------------------------------------------------------------------
 
 Grid::Grid(int gridCellsX, int gridCellsY)
-:   _gridCellSize(0),
+:   _lastGridX(-1),
+    _lastGridY(-1),
+    _gridCellSize(0),
     _cells(gridCellsX * gridCellsY),
     _gridRec({0, 0, 0, 0})
 {}
@@ -79,10 +82,58 @@ void Grid::paintCells(int optKey)
         gridX >= 0 && gridX < conf::gridCellsX &&
         gridY >= 0 && gridY < conf::gridCellsY;
 
-    if (hovering)
+    if (!hovering)
+    {
+        _lastGridX = -1;
+        _lastGridY = -1;
+
+        return;
+    }
+
+    if (_lastGridX == -1)
     {
         at(gridX, gridY).setType(static_cast<Cell::Type>(optKey - 1));
+        _lastGridX = gridX;
+        _lastGridY = gridY;
+
+        return;
     }
+
+    int x0 = _lastGridX;
+    int y0 = _lastGridY;
+    int x1 = gridX;
+    int y1 = gridY;
+
+    int dx = abs(x1 - x0);
+    int dy = abs(y1 - y0);
+    int sx = (x0 < x1) ? 1 : -1;
+    int sy = (y0 < y1) ? 1 : -1;
+    int err = dx - dy;
+
+    while (true)
+    {
+        at(x0, y0).setType(static_cast<Cell::Type>(optKey - 1));
+
+        if (x0 == x1 && y0 == y1)
+        {
+            break;
+        }
+
+        int e2 = err * 2;
+        if (e2 > -dy)
+        {
+            err -= dy;
+            x0 += sx;
+        }
+        if (e2 < dx)
+        {
+            err += dx;
+            y0 += sy;
+        }
+    }
+
+    _lastGridX = gridX;
+    _lastGridY = gridY;
 }
 
 void Grid::drawGrid()
