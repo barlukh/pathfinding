@@ -34,7 +34,7 @@ class Grid
         Cell& at(int x, int y);
 
         // Member Functions
-        void paintCells(int optKey);
+        void paintCells(int paintKey);
         void placeSpecialCell(int x, int y, Cell::Type paintType);
         void drawBresenhamLine(int gridX, int gridY, Cell::Type paintType);
         void clearSpecialCell(Cell::Type paintType);

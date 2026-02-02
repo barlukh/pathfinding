@@ -87,7 +87,7 @@ void Application::run()
 
         if (_ui.getPaintMode())
         {
-            _grid.paintCells(_ui.getOptKey());
+            _grid.paintCells(_ui.getPaintKey());
         }
 
         _grid.drawGrid();

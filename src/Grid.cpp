@@ -83,7 +83,7 @@ Cell& Grid::at(int x, int y)
 // Member Functions
 //----------------------------------------------------------------------------------------
 
-void Grid::paintCells(int optKey)
+void Grid::paintCells(int paintKey)
 {
     Vector2 mousePos = GetMousePosition();
 
@@ -98,7 +98,7 @@ void Grid::paintCells(int optKey)
         return;
     }
 
-    Cell::Type paintType = static_cast<Cell::Type>(optKey - 1);
+    Cell::Type paintType = static_cast<Cell::Type>(paintKey - 1);
 
     if (paintType == Cell::Type::START || paintType == Cell::Type::FINISH)
     {

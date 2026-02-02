@@ -21,11 +21,12 @@
 
 UI::UI()
 :   _paintMode(false),
-    _optKey(1),
+    _paintKey(1),
     _textSize(0),
     _step1Pos{0, 0},
-    _selectPos{0, 0},
-    _optPos{0, 0},
+    _select1Pos{0, 0},
+    _paintKeyPos{0, 0},
+    _step2Pos{0, 0},
     _font(GetFontDefault())
 {}
 
@@ -34,9 +35,9 @@ UI::UI()
 // Getters & Setters
 //----------------------------------------------------------------------------------------
 
-int UI::getOptKey() const
+int UI::getPaintKey() const
 {
-    return _optKey;
+    return _paintKey;
 }
 
 bool UI::getPaintMode() const
@@ -46,14 +47,19 @@ bool UI::getPaintMode() const
 
 void UI::setTextPos(const Rectangle& gridRec)
 {
-    _step1Pos.x = gridRec.width + conf::gridPad;
+    float xOffset = gridRec.width + conf::gridPad;
+
+    _step1Pos.x = xOffset;
     _step1Pos.y = conf::halfPad;
 
-    _selectPos.x = gridRec.width + conf::gridPad;
-    _selectPos.y = conf::halfPad + (gridRec.height / conf::offsetYScaling);
+    _select1Pos.x = xOffset;
+    _select1Pos.y = conf::halfPad + (gridRec.height / conf::offsetYScaling);
 
-    _optPos.x = gridRec.width + conf::gridPad + gridRec.width / conf::optScaling;
-    _optPos.y = conf::halfPad + (gridRec.height / conf::offsetYScaling);
+    _paintKeyPos.x = xOffset + gridRec.width / conf::optScaling;
+    _paintKeyPos.y = conf::halfPad + (gridRec.height / conf::offsetYScaling);
+
+    _step2Pos.x = xOffset;
+    _step2Pos.y = _select1Pos.y + (gridRec.height / conf::offsetYScaling);
 
     _textSize = gridRec.width / conf::textScaling;
 }
@@ -67,19 +73,19 @@ void UI::detectInput(int& lastGridX, int& lastGridY)
 {
     if (IsKeyPressed(KEY_ONE))
     {
-        _optKey = 1;
+        _paintKey = 1;
     }
     if (IsKeyPressed(KEY_TWO))
     {
-        _optKey = 2;
+        _paintKey = 2;
     }
     if (IsKeyPressed(KEY_THREE))
     {
-        _optKey = 3;
+        _paintKey = 3;
     }
     if (IsKeyPressed(KEY_FOUR))
     {
-        _optKey = 4;
+        _paintKey = 4;
     }
 
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
@@ -98,6 +104,10 @@ void UI::drawUI()
 {
     DrawTextEx(_font, conf::step1.data(), _step1Pos, _textSize, 5, BLACK);
 
-    std::string s = std::string(conf::selection.data()) + conf::opts[_optKey - 1].data();
-    DrawTextEx(_font, s.c_str(), _selectPos, _textSize, 5, BLACK);
+    std::string s1 = std::string(conf::selection1.data());
+    std::string s2 = conf::opts1[_paintKey - 1].data();
+    std::string s =  s1 + s2;
+    DrawTextEx(_font, s.c_str(), _select1Pos, _textSize, 5, BLACK);
+
+    DrawTextEx(_font, conf::step2.data(), _step2Pos, _textSize, 5, BLACK);
 }

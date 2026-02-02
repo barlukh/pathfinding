@@ -23,7 +23,7 @@ class UI
         ~UI() = default;
 
         // Getters & Setters
-        int getOptKey() const;
+        int getPaintKey() const;
         bool getPaintMode() const;
         void setTextPos(const Rectangle& gridRec);
 
@@ -33,11 +33,12 @@ class UI
 
     private:
         bool _paintMode;
-        int _optKey;
+        int _paintKey;
         float _textSize;
         Vector2 _step1Pos;
-        Vector2 _selectPos;
-        Vector2 _optPos;
+        Vector2 _select1Pos;
+        Vector2 _paintKeyPos;
+        Vector2 _step2Pos;
         Font _font;
 };
 

@@ -36,15 +36,19 @@ namespace conf
         "Press 3 to place Obstacles\n"
         "Press 4 to reset Cell\n";
 
-    inline constexpr const std::string_view selection =
+    inline constexpr const std::string_view selection1 =
         "Current selection: ";
 
-    inline constexpr const std::array<std::string_view, 4> opts = {
+    inline constexpr const std::array<std::string_view, 4> opts1 = {
         "Start",
         "End",
         "Obstacles",
         "Empty"
     };
+
+    inline constexpr const std::string_view step2 =
+        "Step 2:\n\n"
+        "Press Q to use algorhitm\n";
 
     // FPS
     constexpr int fps = 1000;
