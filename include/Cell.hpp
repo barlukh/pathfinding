@@ -18,8 +18,8 @@ class Cell
     public:
         enum class Type
         {
-            PLAYER,
-            GOAL,
+            START,
+            FINISH,
             OBSTACLE,
             EMPTY
         };

@@ -21,6 +21,8 @@
 Grid::Grid(int gridCellsX, int gridCellsY)
 :   _lastGridX(-1),
     _lastGridY(-1),
+    _startIndex(-1),
+    _finishIndex(-1),
     _gridCellSize(0),
     _cells(gridCellsX * gridCellsY),
     _gridRec({0, 0, 0, 0})
@@ -88,27 +90,60 @@ void Grid::paintCells(int optKey)
     int gridX = (mousePos.x - conf::halfPad) / _gridCellSize;
     int gridY = (mousePos.y - conf::halfPad) / _gridCellSize;
 
-    bool hovering =
-        gridX >= 0 && gridX < conf::gridCellsX &&
-        gridY >= 0 && gridY < conf::gridCellsY;
-
-    if (!hovering)
+    if (gridX < 0 || gridX >= conf::gridCellsX ||
+        gridY < 0 || gridY >= conf::gridCellsY)
     {
         _lastGridX = -1;
         _lastGridY = -1;
+        return;
+    }
 
+    Cell::Type paintType = static_cast<Cell::Type>(optKey - 1);
+
+    if (paintType == Cell::Type::START || paintType == Cell::Type::FINISH)
+    {
+        placeSpecialCell(gridX, gridY, paintType);
+        _lastGridX = gridX;
+        _lastGridY = gridY;
         return;
     }
 
     if (_lastGridX == -1)
     {
-        at(gridX, gridY).setType(static_cast<Cell::Type>(optKey - 1));
+        at(gridX, gridY).setType(paintType);
         _lastGridX = gridX;
         _lastGridY = gridY;
-
         return;
     }
 
+    drawBresenhamLine(gridX, gridY, paintType);
+}
+
+void Grid::placeSpecialCell(int x, int y, Cell::Type paintType)
+{
+    int newIndex = y * conf::gridCellsX + x;
+
+    if (paintType == Cell::Type::START && _finishIndex == newIndex)
+    {
+        _finishIndex = -1;
+    }
+    else if (paintType == Cell::Type::FINISH && _startIndex == newIndex)
+    {
+        _startIndex = -1;
+    }
+
+    int& index = (paintType == Cell::Type::START) ? _startIndex : _finishIndex;
+    if (index != -1)
+    {
+        _cells[index].setType(Cell::Type::EMPTY);
+    }
+
+    at(x, y).setType(paintType);
+    index = newIndex;
+}
+
+void Grid::drawBresenhamLine(int gridX, int gridY, Cell::Type paintType)
+{
     int x0 = _lastGridX;
     int y0 = _lastGridY;
     int x1 = gridX;
@@ -122,12 +157,14 @@ void Grid::paintCells(int optKey)
 
     while (true)
     {
-        at(x0, y0).setType(static_cast<Cell::Type>(optKey - 1));
+        Cell& cell = at(x0, y0);
+
+        clearSpecialCell(cell.getType());
+
+        cell.setType(paintType);
 
         if (x0 == x1 && y0 == y1)
-        {
             break;
-        }
 
         int e2 = err * 2;
         if (e2 > -dy)
@@ -135,7 +172,7 @@ void Grid::paintCells(int optKey)
             err -= dy;
             x0 += sx;
         }
-        if (e2 < dx)
+        if (e2 <  dx)
         {
             err += dx;
             y0 += sy;
@@ -144,6 +181,18 @@ void Grid::paintCells(int optKey)
 
     _lastGridX = gridX;
     _lastGridY = gridY;
+}
+
+void Grid::clearSpecialCell(Cell::Type paintType)
+{
+    if (paintType == Cell::Type::START)
+    {
+        _startIndex = -1;
+    }
+    else if (paintType == Cell::Type::FINISH)
+    {
+        _finishIndex = -1;
+    }
 }
 
 void Grid::drawGrid()
@@ -160,11 +209,11 @@ void Grid::drawGrid()
 
             switch (type)
             {
-            case Cell::Type::PLAYER:
+            case Cell::Type::START:
                 color = BLUE;
                 break;
-            case Cell::Type::GOAL:
-                color = YELLOW;
+            case Cell::Type::FINISH:
+                color = RED;
                 break;
             case Cell::Type::OBSTACLE:
                 color = BLACK;

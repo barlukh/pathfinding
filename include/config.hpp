@@ -31,8 +31,8 @@ namespace conf
 
     inline constexpr const std::string_view step1 =
         "Step 1:\n\n"
-        "Press 1 to place Player\n"
-        "Press 2 to place Goal\n"
+        "Press 1 to place Start\n"
+        "Press 2 to place End\n"
         "Press 3 to place Obstacles\n"
         "Press 4 to reset Cell\n";
 
@@ -40,8 +40,8 @@ namespace conf
         "Current selection: ";
 
     inline constexpr const std::array<std::string_view, 4> opts = {
-        "Player",
-        "Goal",
+        "Start",
+        "End",
         "Obstacles",
         "Empty"
     };

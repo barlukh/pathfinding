@@ -3,7 +3,7 @@
 /*  File:       main.cpp                                                                */
 /*  Purpose:    Main source file and the starting point of the application              */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/01/28                                                              */
+/*  Updated:    2026/02/02                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -19,6 +19,5 @@ int main()
         return EXIT_FAILURE;
 
     app.run();
-
     return EXIT_SUCCESS;
 }

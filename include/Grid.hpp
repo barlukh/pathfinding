@@ -35,11 +35,16 @@ class Grid
 
         // Member Functions
         void paintCells(int optKey);
+        void placeSpecialCell(int x, int y, Cell::Type paintType);
+        void drawBresenhamLine(int gridX, int gridY, Cell::Type paintType);
+        void clearSpecialCell(Cell::Type paintType);
         void drawGrid();
 
     private:
         int _lastGridX;
         int _lastGridY;
+        int _startIndex;
+        int _finishIndex;
         float _gridCellSize;
         std::vector<Cell> _cells;
         Rectangle _gridRec;

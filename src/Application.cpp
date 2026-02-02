@@ -67,7 +67,6 @@ Application::State Application::init()
     _ui.setTextPos(_grid.getGridRec());
 
     _windowInitialized = true;
-
     return State::SUCCESS;
 }
 
