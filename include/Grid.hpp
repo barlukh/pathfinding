@@ -27,6 +27,8 @@ class Grid
 
         // Getters & Setters
         const Rectangle& getGridRec() const;
+        int& getLastGridX();
+        int& getLastGridY();
         void setCells(int windowHeight);
         void setGridRec();
         Cell& at(int x, int y);

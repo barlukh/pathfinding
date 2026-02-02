@@ -3,7 +3,7 @@
 /*  File:       Application.cpp                                                         */
 /*  Purpose:    Source file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/01                                                              */
+/*  Updated:    2026/02/02                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -84,7 +84,7 @@ void Application::run()
             DrawFPS(5, 5);
         }
 
-        _ui.detectInput();
+        _ui.detectInput(_grid.getLastGridX(), _grid.getLastGridY());
 
         if (_ui.getPaintMode())
         {

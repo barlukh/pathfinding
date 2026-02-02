@@ -28,7 +28,7 @@ class UI
         void setTextPos(const Rectangle& gridRec);
 
         // Member Functions
-        void detectInput();
+        void detectInput(int& lastGridX, int& lastGridY);
         void drawUI();
 
     private:

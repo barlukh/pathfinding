@@ -14,6 +14,7 @@
 #include <string>
 #include <string_view>
 
+
 //----------------------------------------------------------------------------------------
 // Constructors & Destructors
 //----------------------------------------------------------------------------------------
@@ -62,7 +63,7 @@ void UI::setTextPos(const Rectangle& gridRec)
 // Member Functions
 //----------------------------------------------------------------------------------------
 
-void UI::detectInput()
+void UI::detectInput(int& lastGridX, int& lastGridY)
 {
     if (IsKeyPressed(KEY_ONE))
     {
@@ -88,6 +89,8 @@ void UI::detectInput()
     else
     {
         _paintMode = false;
+        lastGridX = -1;
+        lastGridY = -1;
     }
 }
 

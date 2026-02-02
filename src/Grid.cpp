@@ -36,6 +36,16 @@ const Rectangle& Grid::getGridRec() const
     return _gridRec;
 }
 
+int& Grid::getLastGridX()
+{
+    return _lastGridX;
+}
+
+int& Grid::getLastGridY()
+{
+    return _lastGridY;
+}
+
 void Grid::setCells(int windowHeight)
 {
     _gridCellSize = static_cast<float>(windowHeight - conf::gridPad) / conf::gridCellsY;
