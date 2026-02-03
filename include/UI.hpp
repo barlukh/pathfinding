@@ -3,7 +3,7 @@
 /*  File:       UI.hpp                                                                  */
 /*  Purpose:    Header file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/02                                                              */
+/*  Updated:    2026/02/03                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -34,11 +34,12 @@ class UI
     private:
         bool _paintMode;
         int _paintKey;
+        int _algoKey;
         float _textSize;
         Vector2 _step1Pos;
         Vector2 _select1Pos;
-        Vector2 _paintKeyPos;
         Vector2 _step2Pos;
+        Vector2 _select2Pos;
         Font _font;
 };
 
