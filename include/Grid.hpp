@@ -26,18 +26,19 @@ class Grid
         ~Grid() = default;
 
         // Getters & Setters
+        bool drawFlag() const;
+        const std::vector<Cell>& getGridVec() const;
+        const Rectangle& getGridRec() const;
+        void setDrawFlag(bool value);
+        void setGridVec(int windowHeight);
+        void setGridRec();
+        
+        void setGridCell(const std::vector<int>& order);
         int& getLastGridX();
         int& getLastGridY();
-        const std::vector<Cell>& getGrid() const;
-        const Rectangle& getGridRec() const;
-        bool getDrawFloodFill() const;
-        void setDrawFloodFill(bool value);
-        void setCells(int windowHeight);
-        void setGridRec();
-        void setGridCell(const std::vector<int>& order);
-        Cell& at(int x, int y);
 
         // Member Functions
+        Cell& at(int x, int y);
         void paintCells(int paintKey);
         void placeSpecialCell(int x, int y, Cell::Type paintType);
         void drawBresenhamLine(int gridX, int gridY, Cell::Type paintType);
@@ -45,14 +46,14 @@ class Grid
         void drawGrid();
 
     private:
-        bool _draw;
+        bool _drawFlag;
         int _lastGridX;
         int _lastGridY;
         int _startIndex;
         int _finishIndex;
         int _counter;
         float _gridCellSize;
-        std::vector<Cell> _grid;
+        std::vector<Cell> _gridVec;
         Rectangle _gridRec;
 };
 

@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/03                                                              */
+/*  Updated:    2026/02/04                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -123,6 +123,7 @@ void UI::detectInput(int& lastGridX, int& lastGridY)
 
 void UI::drawUI()
 {
+    // Draw Step 1 info with the current selection
     DrawTextEx(_font, conf::step1.data(), _step1Pos, _textSize, conf::textSpacing, BLACK);
 
     std::string s1 = std::string(conf::selection1.data());
@@ -130,6 +131,7 @@ void UI::drawUI()
     std::string s =  s1 + s2;
     DrawTextEx(_font, s.c_str(), _select1Pos, _textSize, conf::textSpacing, DARKPURPLE);
 
+    // Draw Step 2 info with the current selection
     DrawTextEx(_font, conf::step2.data(), _step2Pos, _textSize, conf::textSpacing, BLACK);
 
     s1 = std::string(conf::selection2.data());

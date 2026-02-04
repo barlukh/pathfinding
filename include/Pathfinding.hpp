@@ -18,8 +18,7 @@ class Pathfinding
 {
     public:
         // Constructors & Destructors
-        Pathfinding() = delete;
-        Pathfinding(const std::vector<Cell>& grid);
+        Pathfinding() = default;
         Pathfinding(const Pathfinding& other) = delete;
         Pathfinding& operator=(const Pathfinding& other) = delete;
         ~Pathfinding() = default;
@@ -31,7 +30,6 @@ class Pathfinding
         void floodFill(const std::vector<Cell>& grid, int width, int height, int x, int y);
 
     private:
-        std::vector<Cell> _visitedGrid;
         std::vector<int> _floodFillOrder;
 };
 

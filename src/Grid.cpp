@@ -22,14 +22,14 @@
 //----------------------------------------------------------------------------------------
 
 Grid::Grid(int gridCellsX, int gridCellsY)
-:   _draw(false),
+:   _drawFlag(false),
     _lastGridX(-1),
     _lastGridY(-1),
     _startIndex(-1),
     _finishIndex(-1),
     _counter(0),
     _gridCellSize(0),
-    _grid(gridCellsX * gridCellsY),
+    _gridVec(gridCellsX * gridCellsY),
     _gridRec({0, 0, 0, 0})
 {}
 
@@ -48,9 +48,9 @@ int& Grid::getLastGridY()
     return _lastGridY;
 }
 
-const std::vector<Cell>& Grid::getGrid() const
+const std::vector<Cell>& Grid::getGridVec() const
 {
-    return _grid;
+    return _gridVec;
 }
 
 const Rectangle& Grid::getGridRec() const
@@ -58,18 +58,18 @@ const Rectangle& Grid::getGridRec() const
     return _gridRec;
 }
 
-bool Grid::getDrawFloodFill() const
+bool Grid::drawFlag() const
 {
-    return _draw;
+    return _drawFlag;
 }
 
-void Grid::setDrawFloodFill(bool value)
+void Grid::setDrawFlag(bool value)
 {
-    _draw = value;
+    _drawFlag = value;
 }
 
 
-void Grid::setCells(int windowHeight)
+void Grid::setGridVec(int windowHeight)
 {
     _gridCellSize = static_cast<float>(windowHeight - conf::gridPad) / conf::gridCellsY;
 
@@ -98,19 +98,19 @@ void Grid::setGridCell(const std::vector<int>& order)
 {
     if (_counter < static_cast<int>(order.size() - 1))
     {
-        _grid[order[_counter]].setType(Cell::Type::VISITED);
+        _gridVec[order[_counter]].setType(Cell::Type::VISITED);
         _counter++;
     }
     else
     {
         _counter = 0;
-        _draw = false;
+        _drawFlag = false;
     }
 }
 
 Cell& Grid::at(int x, int y)
 {
-    return _grid[y * conf::gridCellsX + x];
+    return _gridVec[y * conf::gridCellsX + x];
 }
 
 
@@ -125,8 +125,7 @@ void Grid::paintCells(int paintKey)
     int gridX = (mousePos.x - conf::halfPad) / _gridCellSize;
     int gridY = (mousePos.y - conf::halfPad) / _gridCellSize;
 
-    if (gridX < 0 || gridX >= conf::gridCellsX ||
-        gridY < 0 || gridY >= conf::gridCellsY)
+    if (gridX < 0 || gridX >= conf::gridCellsX || gridY < 0 || gridY >= conf::gridCellsY)
     {
         _lastGridX = -1;
         _lastGridY = -1;
@@ -170,7 +169,7 @@ void Grid::placeSpecialCell(int x, int y, Cell::Type paintType)
     int& index = (paintType == Cell::Type::START) ? _startIndex : _finishIndex;
     if (index != -1)
     {
-        _grid[index].setType(Cell::Type::EMPTY);
+        _gridVec[index].setType(Cell::Type::EMPTY);
     }
 
     at(x, y).setType(paintType);

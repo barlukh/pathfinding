@@ -25,7 +25,7 @@ Application::Application()
 :   _windowInitialized(false),
     _grid(conf::gridCellsX, conf::gridCellsY),
     _ui(),
-    _path(_grid.getGrid())
+    _path()
 {
     SetTraceLogLevel(LOG_NONE);
     SetTargetFPS(conf::fps);
@@ -53,6 +53,7 @@ Application::State Application::init()
         return State::FAILURE;
     }
 
+    // Measure monitor and derive window size
     int monitor = GetCurrentMonitor();
     int screenWidth = GetMonitorWidth(monitor);
     int screenHeight = GetMonitorHeight(monitor);
@@ -64,7 +65,8 @@ Application::State Application::init()
     SetWindowSize(windowWidth, windowHeight);
     SetWindowPosition(windowPosX, windowPosY);
 
-    _grid.setCells(windowHeight);
+    // Create grid and set UI position
+    _grid.setGridVec(windowHeight);
     _grid.setGridRec();
     _ui.setTextPos(_grid.getGridRec());
 
@@ -85,6 +87,7 @@ void Application::run()
             DrawFPS(5, 5);
         }
 
+        // Detect user input
         _ui.detectInput(_grid.getLastGridX(), _grid.getLastGridY());
 
         if (_ui.getPaintMode())
@@ -94,15 +97,16 @@ void Application::run()
 
         if (IsKeyPressed(KEY_SPACE))
         {
-            _path.floodFill(_grid.getGrid(), conf::gridCellsX, conf::gridCellsY, 0, 0);
-            _grid.setDrawFloodFill(true);
+            _path.floodFill(_grid.getGridVec(), conf::gridCellsX, conf::gridCellsY, 0, 0);
+            _grid.setDrawFlag(true);
         }
 
-        if (_grid.getDrawFloodFill())
+        if (_grid.drawFlag())
         {
             _grid.setGridCell(_path.getFloodFillOrder());
         }
 
+        // Draw all elements
         _grid.drawGrid();
         _ui.drawUI();
 
