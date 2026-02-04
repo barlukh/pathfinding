@@ -3,7 +3,7 @@
 /*  File:       Grid.cpp                                                                */
 /*  Purpose:    Source file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/02                                                              */
+/*  Updated:    2026/02/04                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -14,17 +14,22 @@
 #include <vector>
 
 
+#include <iostream>
+
+
 //----------------------------------------------------------------------------------------
 // Constructors & Destructors
 //----------------------------------------------------------------------------------------
 
 Grid::Grid(int gridCellsX, int gridCellsY)
-:   _lastGridX(-1),
+:   _draw(false),
+    _lastGridX(-1),
     _lastGridY(-1),
     _startIndex(-1),
     _finishIndex(-1),
+    _counter(0),
     _gridCellSize(0),
-    _cells(gridCellsX * gridCellsY),
+    _grid(gridCellsX * gridCellsY),
     _gridRec({0, 0, 0, 0})
 {}
 
@@ -32,11 +37,6 @@ Grid::Grid(int gridCellsX, int gridCellsY)
 //----------------------------------------------------------------------------------------
 // Getters & Setters
 //----------------------------------------------------------------------------------------
-
-const Rectangle& Grid::getGridRec() const
-{
-    return _gridRec;
-}
 
 int& Grid::getLastGridX()
 {
@@ -47,6 +47,27 @@ int& Grid::getLastGridY()
 {
     return _lastGridY;
 }
+
+const std::vector<Cell>& Grid::getGrid() const
+{
+    return _grid;
+}
+
+const Rectangle& Grid::getGridRec() const
+{
+    return _gridRec;
+}
+
+bool Grid::getDrawFloodFill() const
+{
+    return _draw;
+}
+
+void Grid::setDrawFloodFill(bool value)
+{
+    _draw = value;
+}
+
 
 void Grid::setCells(int windowHeight)
 {
@@ -73,9 +94,23 @@ void Grid::setGridRec()
     _gridRec = {x, y, width, height};
 }
 
+void Grid::setGridCell(const std::vector<int>& order)
+{
+    if (_counter < static_cast<int>(order.size() - 1))
+    {
+        _grid[order[_counter]].setType(Cell::Type::VISITED);
+        _counter++;
+    }
+    else
+    {
+        _counter = 0;
+        _draw = false;
+    }
+}
+
 Cell& Grid::at(int x, int y)
 {
-    return _cells[y * conf::gridCellsX + x];
+    return _grid[y * conf::gridCellsX + x];
 }
 
 
@@ -135,7 +170,7 @@ void Grid::placeSpecialCell(int x, int y, Cell::Type paintType)
     int& index = (paintType == Cell::Type::START) ? _startIndex : _finishIndex;
     if (index != -1)
     {
-        _cells[index].setType(Cell::Type::EMPTY);
+        _grid[index].setType(Cell::Type::EMPTY);
     }
 
     at(x, y).setType(paintType);
@@ -220,6 +255,9 @@ void Grid::drawGrid()
                 break;
             case Cell::Type::EMPTY:
                 color = LIGHTGRAY;
+                break;
+            case Cell::Type::VISITED:
+                color = YELLOW;
                 break;
             default:
                 color = RAYWHITE;

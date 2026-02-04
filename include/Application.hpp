@@ -3,7 +3,7 @@
 /*  File:       Application.hpp                                                         */
 /*  Purpose:    Header file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/01                                                              */
+/*  Updated:    2026/02/04                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -12,6 +12,7 @@
 
 #include "Grid.hpp"
 #include "UI.hpp"
+#include "Pathfinding.hpp"
 
 
 class Application
@@ -37,6 +38,7 @@ class Application
         bool _windowInitialized;
         Grid _grid;
         UI _ui;
+        Pathfinding _path;
 };
 
 #endif

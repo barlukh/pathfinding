@@ -3,13 +3,14 @@
 /*  File:       Application.cpp                                                         */
 /*  Purpose:    Source file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/02                                                              */
+/*  Updated:    2026/02/04                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
 #include "Application.hpp"
 #include "Grid.hpp"
 #include "UI.hpp"
+#include "Pathfinding.hpp"
 #include "config.hpp"
 #include "raylib.h"
 #include <iostream>
@@ -23,7 +24,8 @@
 Application::Application()
 :   _windowInitialized(false),
     _grid(conf::gridCellsX, conf::gridCellsY),
-    _ui()
+    _ui(),
+    _path(_grid.getGrid())
 {
     SetTraceLogLevel(LOG_NONE);
     SetTargetFPS(conf::fps);
@@ -88,6 +90,17 @@ void Application::run()
         if (_ui.getPaintMode())
         {
             _grid.paintCells(_ui.getPaintKey());
+        }
+
+        if (IsKeyPressed(KEY_SPACE))
+        {
+            _path.floodFill(_grid.getGrid(), conf::gridCellsX, conf::gridCellsY, 0, 0);
+            _grid.setDrawFloodFill(true);
+        }
+
+        if (_grid.getDrawFloodFill())
+        {
+            _grid.setGridCell(_path.getFloodFillOrder());
         }
 
         _grid.drawGrid();
