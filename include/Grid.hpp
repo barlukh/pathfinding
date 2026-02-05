@@ -3,7 +3,7 @@
 /*  File:       Grid.hpp                                                                */
 /*  Purpose:    Header file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/04                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -18,6 +18,12 @@
 class Grid
 {
     public:
+        enum class State
+        {
+            MODIFIED,
+            OUTOFBOUNDS
+        };
+
         // Constructors & Destructors
         Grid() = delete;
         Grid(int gridCellsX, int gridCellsY);
@@ -26,29 +32,27 @@ class Grid
         ~Grid() = default;
 
         // Getters & Setters
-        bool drawFlag() const;
+        bool drawState() const;
+        float getGridCellSize() const;
         const std::vector<Cell>& getGridVec() const;
         const Rectangle& getGridRec() const;
-        void setDrawFlag(bool value);
+        void setDrawState(bool state);
         void setGridVec(int windowHeight);
         void setGridRec();
         
         void setGridCell(const std::vector<int>& order);
-        int& getLastGridX();
-        int& getLastGridY();
+
 
         // Member Functions
         Cell& at(int x, int y);
-        void paintCells(int paintKey);
+        State updateCells(Vector2 mGridCurPos, Vector2 mGridLastPos, int paintKey);
         void placeSpecialCell(int x, int y, Cell::Type paintType);
-        void drawBresenhamLine(int gridX, int gridY, Cell::Type paintType);
+        void drawBresenhamLine(int x0, int y0, int x1, int y1, Cell::Type paintType);
         void clearSpecialCell(Cell::Type paintType);
         void drawGrid();
 
     private:
-        bool _drawFlag;
-        int _lastGridX;
-        int _lastGridY;
+        bool _drawState;
         int _startIndex;
         int _finishIndex;
         int _counter;

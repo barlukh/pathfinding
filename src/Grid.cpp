@@ -3,7 +3,7 @@
 /*  File:       Grid.cpp                                                                */
 /*  Purpose:    Source file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/04                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -22,9 +22,7 @@
 //----------------------------------------------------------------------------------------
 
 Grid::Grid(int gridCellsX, int gridCellsY)
-:   _drawFlag(false),
-    _lastGridX(-1),
-    _lastGridY(-1),
+:   _drawState(false),
     _startIndex(-1),
     _finishIndex(-1),
     _counter(0),
@@ -38,14 +36,14 @@ Grid::Grid(int gridCellsX, int gridCellsY)
 // Getters & Setters
 //----------------------------------------------------------------------------------------
 
-int& Grid::getLastGridX()
+bool Grid::drawState() const
 {
-    return _lastGridX;
+    return _drawState;
 }
 
-int& Grid::getLastGridY()
+float Grid::getGridCellSize() const
 {
-    return _lastGridY;
+    return _gridCellSize;
 }
 
 const std::vector<Cell>& Grid::getGridVec() const
@@ -58,16 +56,10 @@ const Rectangle& Grid::getGridRec() const
     return _gridRec;
 }
 
-bool Grid::drawFlag() const
+void Grid::setDrawState(bool state)
 {
-    return _drawFlag;
+    _drawState = state;
 }
-
-void Grid::setDrawFlag(bool value)
-{
-    _drawFlag = value;
-}
-
 
 void Grid::setGridVec(int windowHeight)
 {
@@ -104,7 +96,7 @@ void Grid::setGridCell(const std::vector<int>& order)
     else
     {
         _counter = 0;
-        _drawFlag = false;
+        _drawState = false;
     }
 }
 
@@ -118,18 +110,14 @@ Cell& Grid::at(int x, int y)
 // Member Functions
 //----------------------------------------------------------------------------------------
 
-void Grid::paintCells(int paintKey)
+Grid::State Grid::updateCells(Vector2 mGridCurPos, Vector2 mGridLastPos, int paintKey)
 {
-    Vector2 mousePos = GetMousePosition();
-
-    int gridX = (mousePos.x - conf::halfPad) / _gridCellSize;
-    int gridY = (mousePos.y - conf::halfPad) / _gridCellSize;
+    int gridX = mGridCurPos.x;
+    int gridY = mGridCurPos.y;
 
     if (gridX < 0 || gridX >= conf::gridCellsX || gridY < 0 || gridY >= conf::gridCellsY)
     {
-        _lastGridX = -1;
-        _lastGridY = -1;
-        return;
+        return State::OUTOFBOUNDS;
     }
 
     Cell::Type paintType = static_cast<Cell::Type>(paintKey - 1);
@@ -137,20 +125,18 @@ void Grid::paintCells(int paintKey)
     if (paintType == Cell::Type::START || paintType == Cell::Type::FINISH)
     {
         placeSpecialCell(gridX, gridY, paintType);
-        _lastGridX = gridX;
-        _lastGridY = gridY;
-        return;
+        return State::MODIFIED;
     }
 
-    if (_lastGridX == -1)
+    if (mGridLastPos.x == -1)
     {
         at(gridX, gridY).setType(paintType);
-        _lastGridX = gridX;
-        _lastGridY = gridY;
-        return;
+        return State::MODIFIED;
     }
 
-    drawBresenhamLine(gridX, gridY, paintType);
+    drawBresenhamLine(mGridLastPos.x, mGridLastPos.y, gridX, gridY, paintType);
+
+    return State::MODIFIED;
 }
 
 void Grid::placeSpecialCell(int x, int y, Cell::Type paintType)
@@ -176,13 +162,8 @@ void Grid::placeSpecialCell(int x, int y, Cell::Type paintType)
     index = newIndex;
 }
 
-void Grid::drawBresenhamLine(int gridX, int gridY, Cell::Type paintType)
+void Grid::drawBresenhamLine(int x0, int y0, int x1, int y1, Cell::Type paintType)
 {
-    int x0 = _lastGridX;
-    int y0 = _lastGridY;
-    int x1 = gridX;
-    int y1 = gridY;
-
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
     int sx = (x0 < x1) ? 1 : -1;
@@ -212,9 +193,6 @@ void Grid::drawBresenhamLine(int gridX, int gridY, Cell::Type paintType)
             y0 += sy;
         }
     }
-
-    _lastGridX = gridX;
-    _lastGridY = gridY;
 }
 
 void Grid::clearSpecialCell(Cell::Type paintType)

@@ -3,13 +3,14 @@
 /*  File:       UI.hpp                                                                  */
 /*  Purpose:    Header file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/03                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
 #ifndef UI_HPP
 #define UI_HPP
 
+#include "Grid.hpp"
 #include "raylib.h"
 
 
@@ -23,24 +24,27 @@ class UI
         ~UI() = default;
 
         // Getters & Setters
+        bool isPaintModeOn() const;
         int getPaintKey() const;
-        bool getPaintMode() const;
+        const Vector2& getMGridLastPos() const;
+        void setMGridLastPos(Vector2 pos);
         void setTextPos(const Rectangle& gridRec);
 
         // Member Functions
-        void detectInput(int& lastGridX, int& lastGridY);
+        void detectInput();
         void drawUI();
 
     private:
-        bool _paintMode;
-        int _paintKey;
-        int _algoKey;
-        float _textSize;
-        Vector2 _step1Pos;
-        Vector2 _select1Pos;
-        Vector2 _step2Pos;
-        Vector2 _select2Pos;
-        Font _font;
+        bool paintMode;
+        int paintKey;
+        int algoKey;
+        float textSize;
+        Vector2 mGridLastPos;
+        Vector2 step1Pos;
+        Vector2 select1Pos;
+        Vector2 step2Pos;
+        Vector2 select2Pos;
+        Font font;
 };
 
 #endif

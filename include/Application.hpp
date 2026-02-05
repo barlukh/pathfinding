@@ -3,7 +3,7 @@
 /*  File:       Application.hpp                                                         */
 /*  Purpose:    Header file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/04                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -35,10 +35,10 @@ class Application
         void run();
 
     private:
-        bool _windowInitialized;
-        Grid _grid;
-        UI _ui;
-        Pathfinding _path;
+        bool windowInitialized;
+        Grid grid;
+        UI ui;
+        Pathfinding pathfinding;
 };
 
 #endif

@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/04                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -20,15 +20,16 @@
 //----------------------------------------------------------------------------------------
 
 UI::UI()
-:   _paintMode(false),
-    _paintKey(1),
-    _algoKey(1),
-    _textSize(0),
-    _step1Pos{0, 0},
-    _select1Pos{0, 0},
-    _step2Pos{0, 0},
-    _select2Pos{0, 0},
-    _font(GetFontDefault())
+:   paintMode(false),
+    paintKey(1),
+    algoKey(1),
+    textSize(0),
+    mGridLastPos({-1, -1}),
+    step1Pos({0, 0}),
+    select1Pos({0, 0}),
+    step2Pos({0, 0}),
+    select2Pos({0, 0}),
+    font(GetFontDefault())
 {}
 
 
@@ -36,33 +37,47 @@ UI::UI()
 // Getters & Setters
 //----------------------------------------------------------------------------------------
 
-int UI::getPaintKey() const
+bool UI::isPaintModeOn() const
 {
-    return _paintKey;
+    return paintMode;
 }
 
-bool UI::getPaintMode() const
+int UI::getPaintKey() const
 {
-    return _paintMode;
+    return paintKey;
+}
+
+const Vector2& UI::getMGridLastPos() const
+{
+    return mGridLastPos;
+}
+
+void UI::setMGridLastPos(Vector2 pos)
+{
+    mGridLastPos.x = pos.x;
+    mGridLastPos.y = pos.y;
 }
 
 void UI::setTextPos(const Rectangle& gridRec)
 {
     float xOffset = gridRec.width + conf::gridPad;
 
-    _step1Pos.x = xOffset;
-    _step1Pos.y = conf::halfPad;
+    // Set position of the 'Step 1' info panel
+    step1Pos.x = xOffset;
+    step1Pos.y = conf::halfPad;
 
-    _select1Pos.x = xOffset;
-    _select1Pos.y = _step1Pos.y + (gridRec.height / conf::offsetYScaling);
+    select1Pos.x = xOffset;
+    select1Pos.y = step1Pos.y + (gridRec.height / conf::offsetYScaling);
 
-    _step2Pos.x = xOffset;
-    _step2Pos.y = _select1Pos.y + (gridRec.height / conf::offsetYScaling);
+    // Set position of the 'Step 2' info panel
+    step2Pos.x = xOffset;
+    step2Pos.y = select1Pos.y + (gridRec.height / conf::offsetYScaling);
 
-    _select2Pos.x = xOffset;
-    _select2Pos.y = _step2Pos.y + (gridRec.height / conf::offsetYScaling);
+    select2Pos.x = xOffset;
+    select2Pos.y = step2Pos.y + (gridRec.height / conf::offsetYScaling);
 
-    _textSize = gridRec.width / conf::textScaling;
+    // Set text size
+    textSize = gridRec.width / conf::textScaling;
 }
 
 
@@ -70,72 +85,75 @@ void UI::setTextPos(const Rectangle& gridRec)
 // Member Functions
 //----------------------------------------------------------------------------------------
 
-void UI::detectInput(int& lastGridX, int& lastGridY)
+void UI::detectInput()
 {
+    // Detect cell type selection input
     if (IsKeyPressed(KEY_ONE))
     {
-        _paintKey = 1;
+        paintKey = 1;
     }
     if (IsKeyPressed(KEY_TWO))
     {
-        _paintKey = 2;
+        paintKey = 2;
     }
     if (IsKeyPressed(KEY_THREE))
     {
-        _paintKey = 3;
+        paintKey = 3;
     }
     if (IsKeyPressed(KEY_FOUR))
     {
-        _paintKey = 4;
+        paintKey = 4;
     }
 
+    // Detect algorithm selection input
     if (IsKeyPressed(KEY_Q))
     {
-        _algoKey = 1;
+        algoKey = 1;
     }
 
     if (IsKeyPressed(KEY_W))
     {
-        _algoKey = 2;
+        algoKey = 2;
     }
 
     if (IsKeyPressed(KEY_E))
     {
-        _algoKey = 3;
+        algoKey = 3;
     }
 
     if (IsKeyPressed(KEY_R))
     {
-        _algoKey = 4;
+        algoKey = 4;
     }
 
+    // Detect mouse being pressed (paint mode on/off)
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        _paintMode = true;
+        paintMode = true;
     }
     else
     {
-        _paintMode = false;
-        lastGridX = -1;
-        lastGridY = -1;
+        paintMode = false;
+        mGridLastPos.x = -1;
+        mGridLastPos.y = -1;
     }
 }
 
 void UI::drawUI()
 {
-    // Draw Step 1 info with the current selection
-    DrawTextEx(_font, conf::step1.data(), _step1Pos, _textSize, conf::textSpacing, BLACK);
+    // Draw 'Step 1' info with the current selection
+    DrawTextEx(font, conf::step1.data(), step1Pos, textSize, conf::textSpacing, BLACK);
 
     std::string s1 = std::string(conf::selection1.data());
-    std::string s2 = conf::opts1[_paintKey - 1].data();
+    std::string s2 = conf::opts1[paintKey - 1].data();
     std::string s =  s1 + s2;
-    DrawTextEx(_font, s.c_str(), _select1Pos, _textSize, conf::textSpacing, DARKPURPLE);
+    DrawTextEx(font, s.c_str(), select1Pos, textSize, conf::textSpacing, DARKPURPLE);
 
-    // Draw Step 2 info with the current selection
-    DrawTextEx(_font, conf::step2.data(), _step2Pos, _textSize, conf::textSpacing, BLACK);
+    // Draw 'Step 2' info with the current selection
+    DrawTextEx(font, conf::step2.data(), step2Pos, textSize, conf::textSpacing, BLACK);
 
     s1 = std::string(conf::selection2.data());
-    s2 = conf::opts2[_algoKey - 1].data();
+    s2 = conf::opts2[algoKey - 1].data();
     s =  s1 + s2;
-    DrawTextEx(_font, s.c_str(), _select2Pos, _textSize, conf::textSpacing, DARKPURPLE);
+    DrawTextEx(font, s.c_str(), select2Pos, textSize, conf::textSpacing, DARKPURPLE);
 }

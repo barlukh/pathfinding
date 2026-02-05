@@ -3,7 +3,7 @@
 /*  File:       Application.cpp                                                         */
 /*  Purpose:    Source file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/04                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -22,10 +22,10 @@
 //----------------------------------------------------------------------------------------
 
 Application::Application()
-:   _windowInitialized(false),
-    _grid(conf::gridCellsX, conf::gridCellsY),
-    _ui(),
-    _path()
+:   windowInitialized(false),
+    grid(conf::gridCellsX, conf::gridCellsY),
+    ui(),
+    pathfinding()
 {
     SetTraceLogLevel(LOG_NONE);
     SetTargetFPS(conf::fps);
@@ -33,7 +33,7 @@ Application::Application()
 
 Application::~Application()
 {
-    if (_windowInitialized)
+    if (windowInitialized)
     {
         CloseWindow();
     }
@@ -66,11 +66,11 @@ Application::State Application::init()
     SetWindowPosition(windowPosX, windowPosY);
 
     // Create grid and set UI position
-    _grid.setGridVec(windowHeight);
-    _grid.setGridRec();
-    _ui.setTextPos(_grid.getGridRec());
+    grid.setGridVec(windowHeight);
+    grid.setGridRec();
+    ui.setTextPos(grid.getGridRec());
 
-    _windowInitialized = true;
+    windowInitialized = true;
     return State::SUCCESS;
 }
 
@@ -83,32 +83,43 @@ void Application::run()
         ClearBackground(RAYWHITE);
 
         if (conf::showFps)
-        {
             DrawFPS(5, 5);
-        }
 
         // Detect user input
-        _ui.detectInput(_grid.getLastGridX(), _grid.getLastGridY());
+        ui.detectInput();
 
-        if (_ui.getPaintMode())
+        if (ui.isPaintModeOn())
         {
-            _grid.paintCells(_ui.getPaintKey());
+            Vector2 mousePos = GetMousePosition();
+            float gridCellSize = grid.getGridCellSize();
+
+            Vector2 mGridCurPos;
+            mGridCurPos.x = (mousePos.x - conf::halfPad) / gridCellSize;
+            mGridCurPos.y = (mousePos.y - conf::halfPad) / gridCellSize;
+
+            Vector2 mGridLastPos = ui.getMGridLastPos();
+
+            int key = ui.getPaintKey();
+
+            Grid::State updateState = grid.updateCells(mGridCurPos, mGridLastPos, key);
+            if (updateState == Grid::State::MODIFIED)
+                ui.setMGridLastPos(mGridCurPos);
+            else
+                ui.setMGridLastPos({-1, -1});
         }
 
         if (IsKeyPressed(KEY_SPACE))
         {
-            _path.floodFill(_grid.getGridVec(), conf::gridCellsX, conf::gridCellsY, 0, 0);
-            _grid.setDrawFlag(true);
+            pathfinding.floodFill(grid.getGridVec(), conf::gridCellsX, conf::gridCellsY, 0, 0);
+            grid.setDrawState(true);
         }
 
-        if (_grid.drawFlag())
-        {
-            _grid.setGridCell(_path.getFloodFillOrder());
-        }
+        if (grid.drawState())
+            grid.setGridCell(pathfinding.getFloodFillOrder());
 
         // Draw all elements
-        _grid.drawGrid();
-        _ui.drawUI();
+        grid.drawGrid();
+        ui.drawUI();
 
         EndDrawing();
     }
