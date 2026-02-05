@@ -3,7 +3,7 @@
 /*  File:       config.hpp                                                              */
 /*  Purpose:    Configuration values used by the application                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/04                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -17,7 +17,7 @@
 namespace conf
 {
     // Window
-    inline constexpr const std::string_view title = "pathfinding";
+    inline constexpr std::string_view title = "pathfinding";
 
     constexpr int gridCellsX = 70;
     constexpr int gridCellsY = 50;

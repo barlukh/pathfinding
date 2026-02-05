@@ -10,7 +10,9 @@
 #ifndef UI_HPP
 #define UI_HPP
 
+#include "Cell.hpp"
 #include "raylib.h"
+#include <vector>
 
 
 class UI
@@ -24,9 +26,13 @@ class UI
 
         // Getters & Setters
         bool isPaintModeOn() const;
+        bool isExecModeOn() const;
+        bool isVisualizeModeOn() const;
         int getS1Key() const;
+        int getS2Key() const;
         const Vector2& getMouseCur() const;
         const Vector2& getMouseLast() const;
+        void setVisualizeMode(bool mode);
         void setMouseCur(float gridCellSize);
         void setMouseLast(Vector2 pos);
 
@@ -34,11 +40,14 @@ class UI
         void calcUIPosValues(const Rectangle& gridRec);
         void detectInput();
         void drawUI();
+        void drawGrid(const std::vector<Cell>& gridVec, const Rectangle& gridRec);
 
     private:
         bool paintMode;
+        bool execMode;
+        bool visualizeMode;
         int s1Key;
-        int s2key;
+        int s2Key;
         float textSize;
         Vector2 mouseCur;
         Vector2 mouseLast;

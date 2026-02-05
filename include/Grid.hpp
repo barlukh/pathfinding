@@ -18,9 +18,9 @@
 class Grid
 {
     public:
-        enum class State
+        enum class Pos
         {
-            MODIFIED,
+            WITHINBOUNDS,
             OUTOFBOUNDS
         };
 
@@ -32,27 +32,22 @@ class Grid
         ~Grid() = default;
 
         // Getters & Setters
-        bool isDrawModeOn() const;
+        int getStartIndex() const;
         float getGridCellSize() const;
         const std::vector<Cell>& getGridVec() const;
         const Rectangle& getGridRec() const;
-        void setDrawMode(bool mode);
         void setGridVec(int windowHeight);
         void setGridRec();
 
         // Member Functions
         Cell& at(int x, int y);
-        State edit(int s1Key, Vector2 mGridCurPos, Vector2 mGridLastPos);
+        Pos paint(int s1Key, Vector2 mGridCurPos, Vector2 mGridLastPos);
         void placeSpecialCell(int x, int y, Cell::Type paintType);
         void drawBresenhamLine(int x0, int y0, int x1, int y1, Cell::Type paintType);
         void clearSpecialCell(Cell::Type paintType);
-        void drawGrid();
-
-        // CLEAN THIS
-        void setGridCell(const std::vector<int>& order);
+        void visualize(const std::vector<int>& order);
 
     private:
-        bool drawMode;
         int startIndex;
         int finishIndex;
         int counter;

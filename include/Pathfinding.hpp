@@ -3,7 +3,7 @@
 /*  File:       Pathfinding.hpp                                                         */
 /*  Purpose:    Header file for the Class Pathfinding                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/04                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -24,13 +24,14 @@ class Pathfinding
         ~Pathfinding() = default;
 
         // Getters & Setters
-        const std::vector<int>& getFloodFillOrder() const;
+        const std::vector<int>& getPathfindOrder() const;
 
         // Member Functions
-        void floodFill(const std::vector<Cell>& grid, int width, int height, int x, int y);
+        void execute(int S2Key, int startIndex, const std::vector<Cell>& gridVec);
+        void floodFill(const std::vector<Cell>& gridVec, int w, int h, int x, int y);
 
     private:
-        std::vector<int> _floodFillOrder;
+        std::vector<int> pathfindOrder;
 };
 
 #endif

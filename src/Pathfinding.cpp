@@ -3,7 +3,7 @@
 /*  File:       Pathfinding.cpp                                                         */
 /*  Purpose:    Source file for the Class Pathfinding                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/04                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -14,23 +14,33 @@
 
 
 //----------------------------------------------------------------------------------------
-// Constructors & Destructors
-//----------------------------------------------------------------------------------------
-
-
-//----------------------------------------------------------------------------------------
 // Getters & Setters
 //----------------------------------------------------------------------------------------
 
-const std::vector<int>& Pathfinding::getFloodFillOrder() const
+const std::vector<int>& Pathfinding::getPathfindOrder() const
 {
-    return _floodFillOrder;
+    return pathfindOrder;
 }
 
 
 //----------------------------------------------------------------------------------------
 // Member Functions
 //----------------------------------------------------------------------------------------
+
+void Pathfinding::execute(int S2Key, int startIndex, const std::vector<Cell>& gridVec)
+{
+    int startX = startIndex % conf::gridCellsX;
+    int startY = startIndex / conf::gridCellsX;
+
+    switch (S2Key)
+    {
+    case 1:
+        floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, startX, startY);
+        break;    
+    default:
+        break;
+    }
+}
 
 void Pathfinding::floodFill(const std::vector<Cell>& grid, int w, int h, int x, int y)
 {
@@ -50,12 +60,12 @@ void Pathfinding::floodFill(const std::vector<Cell>& grid, int w, int h, int x, 
         int index = y * w + x;
 
         // Skip if not empty or already visited
-        if (visitedGrid[index].getType() != Cell::Type::EMPTY || visitedGrid[index].getType() == Cell::Type::VISITED)
+        if (visitedGrid[index].getType() == Cell::Type::OBSTACLE || visitedGrid[index].getType() == Cell::Type::VISITED)
             continue;
 
         // Mark as visited
         visitedGrid[index].setType(Cell::Type::VISITED);
-        _floodFillOrder.push_back(index);
+        pathfindOrder.push_back(index);
 
         // Push neighbors onto stack
         cellStack.push({x + 1, y});

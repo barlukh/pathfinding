@@ -91,25 +91,27 @@ void Application::run()
         {
             ui.setMouseCur(grid.getGridCellSize());
 
-            Grid::State s = grid.edit(ui.getS1Key(), ui.getMouseCur(), ui.getMouseLast());
-            if (s == Grid::State::MODIFIED)
+            Grid::Pos p = grid.paint(ui.getS1Key(), ui.getMouseCur(), ui.getMouseLast());
+            if (p == Grid::Pos::WITHINBOUNDS)
                 ui.setMouseLast(ui.getMouseCur());
             else
                 ui.setMouseLast({-1, -1});
         }
 
-        if (IsKeyPressed(KEY_SPACE))
+        // Execute algorithm
+        if (ui.isExecModeOn())
         {
-            path.floodFill(grid.getGridVec(), conf::gridCellsX, conf::gridCellsY, 0, 0);
-            grid.setDrawMode(true);
+            path.execute(ui.getS2Key(), grid.getStartIndex(), grid.getGridVec());
+            ui.setVisualizeMode(true);
         }
 
-        if (grid.isDrawModeOn())
-            grid.setGridCell(path.getFloodFillOrder());
+        // Visualize the executed algorithm
+        if (ui.isVisualizeModeOn())
+            grid.visualize(path.getPathfindOrder());
 
         // Draw all elements
-        grid.drawGrid();
         ui.drawUI();
+        ui.drawGrid(grid.getGridVec(), grid.getGridRec());
 
         EndDrawing();
     }

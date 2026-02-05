@@ -8,6 +8,7 @@
 /* ************************************************************************************ */
 
 #include "Grid.hpp"
+#include "Cell.hpp"
 #include "config.hpp"
 #include "raylib.h"
 #include <cstdlib>
@@ -19,8 +20,7 @@
 //----------------------------------------------------------------------------------------
 
 Grid::Grid(int gridCellsX, int gridCellsY)
-:   drawMode(false),
-    startIndex(-1),
+:   startIndex(-1),
     finishIndex(-1),
     counter(0),
     gridCellSize(0),
@@ -33,9 +33,9 @@ Grid::Grid(int gridCellsX, int gridCellsY)
 // Getters & Setters
 //----------------------------------------------------------------------------------------
 
-bool Grid::isDrawModeOn() const
+int Grid::getStartIndex() const
 {
-    return drawMode;
+    return startIndex;
 }
 
 float Grid::getGridCellSize() const
@@ -51,11 +51,6 @@ const std::vector<Cell>& Grid::getGridVec() const
 const Rectangle& Grid::getGridRec() const
 {
     return gridRec;
-}
-
-void Grid::setDrawMode(bool mode)
-{
-    drawMode = mode;
 }
 
 void Grid::setGridVec(int windowHeight)
@@ -93,30 +88,30 @@ Cell& Grid::at(int x, int y)
     return gridVec[y * conf::gridCellsX + x];
 }
 
-Grid::State Grid::edit(int s1Key, Vector2 mouseCur, Vector2 mouseLast)
+Grid::Pos Grid::paint(int s1Key, Vector2 mouseCur, Vector2 mouseLast)
 {
     int gridX = mouseCur.x;
     int gridY = mouseCur.y;
 
     if (gridX < 0 || gridX >= conf::gridCellsX || gridY < 0 || gridY >= conf::gridCellsY)
-        return State::OUTOFBOUNDS;
+        return Pos::OUTOFBOUNDS;
 
     Cell::Type paintType = static_cast<Cell::Type>(s1Key - 1);
 
     if (paintType == Cell::Type::START || paintType == Cell::Type::FINISH)
     {
         placeSpecialCell(gridX, gridY, paintType);
-        return State::MODIFIED;
+        return Pos::WITHINBOUNDS;
     }
 
     if (mouseLast.x == -1)
     {
         at(gridX, gridY).setType(paintType);
-        return State::MODIFIED;
+        return Pos::WITHINBOUNDS;
     }
 
     drawBresenhamLine(mouseLast.x, mouseLast.y, gridX, gridY, paintType);
-    return State::MODIFIED;
+    return Pos::WITHINBOUNDS;
 }
 
 void Grid::placeSpecialCell(int x, int y, Cell::Type paintType)
@@ -176,49 +171,7 @@ void Grid::clearSpecialCell(Cell::Type paintType)
         finishIndex = -1;
 }
 
-void Grid::drawGrid()
-{
-    Color color;
-
-    for (int y = 0; y < conf::gridCellsY; y++)
-    {
-        for (int x = 0; x < conf::gridCellsX; x++)
-        {
-            Cell currentCell = at(x, y);
-            Rectangle cellRec = currentCell.getCell();
-            Cell::Type type = currentCell.getType();
-
-            switch (type)
-            {
-            case Cell::Type::START:
-                color = BLUE;
-                break;
-            case Cell::Type::FINISH:
-                color = RED;
-                break;
-            case Cell::Type::OBSTACLE:
-                color = BLACK;
-                break;
-            case Cell::Type::EMPTY:
-                color = LIGHTGRAY;
-                break;
-            case Cell::Type::VISITED:
-                color = YELLOW;
-                break;
-            default:
-                color = RAYWHITE;
-                break;
-            }
-
-            DrawRectangleRec(cellRec, color);
-            DrawRectangleLinesEx(cellRec, 1.0f, DARKGRAY);
-        }
-    }
-
-    DrawRectangleLinesEx(getGridRec(), 2.0f, DARKGRAY);
-}
-
-void Grid::setGridCell(const std::vector<int>& order)
+void Grid::visualize(const std::vector<int>& order)
 {
     if (counter < static_cast<int>(order.size() - 1))
     {
@@ -228,6 +181,6 @@ void Grid::setGridCell(const std::vector<int>& order)
     else
     {
         counter = 0;
-        drawMode = false;
+        // visualizeMode = false;
     }
 }

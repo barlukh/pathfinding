@@ -8,11 +8,13 @@
 /* ************************************************************************************ */
 
 #include "UI.hpp"
+#include "Cell.hpp"
 #include "config.hpp"
 #include "raylib.h"
 #include <array>
 #include <string>
 #include <string_view>
+#include <vector>
 
 
 //----------------------------------------------------------------------------------------
@@ -21,8 +23,10 @@
 
 UI::UI()
 :   paintMode(false),
+    execMode(false),
+    visualizeMode(false),
     s1Key(1),
-    s2key(1),
+    s2Key(1),
     textSize(0),
     mouseCur({-1, -1}),
     mouseLast({-1, -1}),
@@ -43,9 +47,24 @@ bool UI::isPaintModeOn() const
     return paintMode;
 }
 
+bool UI::isExecModeOn() const
+{
+    return execMode;
+}
+
+bool UI::isVisualizeModeOn() const
+{
+    return visualizeMode;
+}
+
 int UI::getS1Key() const
 {
     return s1Key;
+}
+
+int UI::getS2Key() const
+{
+    return s2Key;
 }
 
 const Vector2& UI::getMouseCur() const
@@ -56,6 +75,11 @@ const Vector2& UI::getMouseCur() const
 const Vector2& UI::getMouseLast() const
 {
     return mouseLast;
+}
+
+void UI::setVisualizeMode(bool mode)
+{
+    visualizeMode = mode;
 }
 
 void UI::setMouseCur(float gridCellSize)
@@ -115,16 +139,16 @@ void UI::detectInput()
 
     // Detect algorithm selection input
     if (IsKeyPressed(KEY_Q))
-        s2key = 1;
+        s2Key = 1;
 
     if (IsKeyPressed(KEY_W))
-        s2key = 2;
+        s2Key = 2;
 
     if (IsKeyPressed(KEY_E))
-        s2key = 3;
+        s2Key = 3;
 
     if (IsKeyPressed(KEY_R))
-        s2key = 4;
+        s2Key = 4;
 
     // Detect mouse being pressed (paint mode on/off)
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
@@ -134,6 +158,12 @@ void UI::detectInput()
         paintMode = false;
         mouseLast = {-1, -1};
     }
+
+    // Detect execution input
+    if (IsKeyPressed(KEY_SPACE))
+        execMode = true;
+    else
+        execMode = false;
 }
 
 void UI::drawUI()
@@ -150,7 +180,49 @@ void UI::drawUI()
     DrawTextEx(font, conf::step2.data(), step2Pos, textSize, conf::textSpacing, BLACK);
 
     s1 = std::string(conf::selection2.data());
-    s2 = conf::opts2[s2key - 1].data();
+    s2 = conf::opts2[s2Key - 1].data();
     s =  s1 + s2;
     DrawTextEx(font, s.c_str(), select2Pos, textSize, conf::textSpacing, DARKPURPLE);
+}
+
+void UI::drawGrid(const std::vector<Cell>& gridVec, const Rectangle& gridRec)
+{
+    Color color;
+
+    for (int y = 0; y < conf::gridCellsY; y++)
+    {
+        for (int x = 0; x < conf::gridCellsX; x++)
+        {
+            Cell currentCell = gridVec[y * conf::gridCellsX + x];
+            Rectangle cellRec = currentCell.getCell();
+            Cell::Type type = currentCell.getType();
+
+            switch (type)
+            {
+            case Cell::Type::START:
+                color = BLUE;
+                break;
+            case Cell::Type::FINISH:
+                color = RED;
+                break;
+            case Cell::Type::OBSTACLE:
+                color = BLACK;
+                break;
+            case Cell::Type::EMPTY:
+                color = LIGHTGRAY;
+                break;
+            case Cell::Type::VISITED:
+                color = YELLOW;
+                break;
+            default:
+                color = RAYWHITE;
+                break;
+            }
+
+            DrawRectangleRec(cellRec, color);
+            DrawRectangleLinesEx(cellRec, 1.0f, DARKGRAY);
+        }
+    }
+
+    DrawRectangleLinesEx(gridRec, 2.0f, DARKGRAY);
 }
