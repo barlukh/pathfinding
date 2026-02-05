@@ -21,10 +21,11 @@
 
 UI::UI()
 :   paintMode(false),
-    paintKey(1),
-    algoKey(1),
+    s1Key(1),
+    s2key(1),
     textSize(0),
-    mGridLastPos({-1, -1}),
+    mouseCur({-1, -1}),
+    mouseLast({-1, -1}),
     step1Pos({0, 0}),
     select1Pos({0, 0}),
     step2Pos({0, 0}),
@@ -42,23 +43,40 @@ bool UI::isPaintModeOn() const
     return paintMode;
 }
 
-int UI::getPaintKey() const
+int UI::getS1Key() const
 {
-    return paintKey;
+    return s1Key;
 }
 
-const Vector2& UI::getMGridLastPos() const
+const Vector2& UI::getMouseCur() const
 {
-    return mGridLastPos;
+    return mouseCur;
 }
 
-void UI::setMGridLastPos(Vector2 pos)
+const Vector2& UI::getMouseLast() const
 {
-    mGridLastPos.x = pos.x;
-    mGridLastPos.y = pos.y;
+    return mouseLast;
 }
 
-void UI::setTextPos(const Rectangle& gridRec)
+void UI::setMouseCur(float gridCellSize)
+{
+    Vector2 mousePos = GetMousePosition();
+
+    mouseCur.x = (mousePos.x - conf::halfPad) / gridCellSize;
+    mouseCur.y = (mousePos.y - conf::halfPad) / gridCellSize;
+}
+
+void UI::setMouseLast(Vector2 pos)
+{
+    mouseLast = {pos.x, pos.y};
+}
+
+
+//----------------------------------------------------------------------------------------
+// Member Functions
+//----------------------------------------------------------------------------------------
+
+void UI::calcUIPosValues(const Rectangle& gridRec)
 {
     float xOffset = gridRec.width + conf::gridPad;
 
@@ -80,62 +98,41 @@ void UI::setTextPos(const Rectangle& gridRec)
     textSize = gridRec.width / conf::textScaling;
 }
 
-
-//----------------------------------------------------------------------------------------
-// Member Functions
-//----------------------------------------------------------------------------------------
-
 void UI::detectInput()
 {
     // Detect cell type selection input
     if (IsKeyPressed(KEY_ONE))
-    {
-        paintKey = 1;
-    }
+        s1Key = 1;
+
     if (IsKeyPressed(KEY_TWO))
-    {
-        paintKey = 2;
-    }
+        s1Key = 2;
+
     if (IsKeyPressed(KEY_THREE))
-    {
-        paintKey = 3;
-    }
+        s1Key = 3;
+
     if (IsKeyPressed(KEY_FOUR))
-    {
-        paintKey = 4;
-    }
+        s1Key = 4;
 
     // Detect algorithm selection input
     if (IsKeyPressed(KEY_Q))
-    {
-        algoKey = 1;
-    }
+        s2key = 1;
 
     if (IsKeyPressed(KEY_W))
-    {
-        algoKey = 2;
-    }
+        s2key = 2;
 
     if (IsKeyPressed(KEY_E))
-    {
-        algoKey = 3;
-    }
+        s2key = 3;
 
     if (IsKeyPressed(KEY_R))
-    {
-        algoKey = 4;
-    }
+        s2key = 4;
 
     // Detect mouse being pressed (paint mode on/off)
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-    {
         paintMode = true;
-    }
     else
     {
         paintMode = false;
-        mGridLastPos.x = -1;
-        mGridLastPos.y = -1;
+        mouseLast = {-1, -1};
     }
 }
 
@@ -145,7 +142,7 @@ void UI::drawUI()
     DrawTextEx(font, conf::step1.data(), step1Pos, textSize, conf::textSpacing, BLACK);
 
     std::string s1 = std::string(conf::selection1.data());
-    std::string s2 = conf::opts1[paintKey - 1].data();
+    std::string s2 = conf::opts1[s1Key - 1].data();
     std::string s =  s1 + s2;
     DrawTextEx(font, s.c_str(), select1Pos, textSize, conf::textSpacing, DARKPURPLE);
 
@@ -153,7 +150,7 @@ void UI::drawUI()
     DrawTextEx(font, conf::step2.data(), step2Pos, textSize, conf::textSpacing, BLACK);
 
     s1 = std::string(conf::selection2.data());
-    s2 = conf::opts2[algoKey - 1].data();
+    s2 = conf::opts2[s2key - 1].data();
     s =  s1 + s2;
     DrawTextEx(font, s.c_str(), select2Pos, textSize, conf::textSpacing, DARKPURPLE);
 }

@@ -10,7 +10,6 @@
 #ifndef UI_HPP
 #define UI_HPP
 
-#include "Grid.hpp"
 #include "raylib.h"
 
 
@@ -25,21 +24,24 @@ class UI
 
         // Getters & Setters
         bool isPaintModeOn() const;
-        int getPaintKey() const;
-        const Vector2& getMGridLastPos() const;
-        void setMGridLastPos(Vector2 pos);
-        void setTextPos(const Rectangle& gridRec);
+        int getS1Key() const;
+        const Vector2& getMouseCur() const;
+        const Vector2& getMouseLast() const;
+        void setMouseCur(float gridCellSize);
+        void setMouseLast(Vector2 pos);
 
         // Member Functions
+        void calcUIPosValues(const Rectangle& gridRec);
         void detectInput();
         void drawUI();
 
     private:
         bool paintMode;
-        int paintKey;
-        int algoKey;
+        int s1Key;
+        int s2key;
         float textSize;
-        Vector2 mGridLastPos;
+        Vector2 mouseCur;
+        Vector2 mouseLast;
         Vector2 step1Pos;
         Vector2 select1Pos;
         Vector2 step2Pos;

@@ -38,7 +38,7 @@ class Application
         bool windowInitialized;
         Grid grid;
         UI ui;
-        Pathfinding pathfinding;
+        Pathfinding path;
 };
 
 #endif

@@ -25,7 +25,7 @@ Application::Application()
 :   windowInitialized(false),
     grid(conf::gridCellsX, conf::gridCellsY),
     ui(),
-    pathfinding()
+    path()
 {
     SetTraceLogLevel(LOG_NONE);
     SetTargetFPS(conf::fps);
@@ -34,9 +34,7 @@ Application::Application()
 Application::~Application()
 {
     if (windowInitialized)
-    {
         CloseWindow();
-    }
 }
 
 
@@ -68,7 +66,7 @@ Application::State Application::init()
     // Create grid and set UI position
     grid.setGridVec(windowHeight);
     grid.setGridRec();
-    ui.setTextPos(grid.getGridRec());
+    ui.calcUIPosValues(grid.getGridRec());
 
     windowInitialized = true;
     return State::SUCCESS;
@@ -88,34 +86,26 @@ void Application::run()
         // Detect user input
         ui.detectInput();
 
+        // Edit the grid with the selected color
         if (ui.isPaintModeOn())
         {
-            Vector2 mousePos = GetMousePosition();
-            float gridCellSize = grid.getGridCellSize();
+            ui.setMouseCur(grid.getGridCellSize());
 
-            Vector2 mGridCurPos;
-            mGridCurPos.x = (mousePos.x - conf::halfPad) / gridCellSize;
-            mGridCurPos.y = (mousePos.y - conf::halfPad) / gridCellSize;
-
-            Vector2 mGridLastPos = ui.getMGridLastPos();
-
-            int key = ui.getPaintKey();
-
-            Grid::State updateState = grid.updateCells(mGridCurPos, mGridLastPos, key);
-            if (updateState == Grid::State::MODIFIED)
-                ui.setMGridLastPos(mGridCurPos);
+            Grid::State s = grid.edit(ui.getS1Key(), ui.getMouseCur(), ui.getMouseLast());
+            if (s == Grid::State::MODIFIED)
+                ui.setMouseLast(ui.getMouseCur());
             else
-                ui.setMGridLastPos({-1, -1});
+                ui.setMouseLast({-1, -1});
         }
 
         if (IsKeyPressed(KEY_SPACE))
         {
-            pathfinding.floodFill(grid.getGridVec(), conf::gridCellsX, conf::gridCellsY, 0, 0);
-            grid.setDrawState(true);
+            path.floodFill(grid.getGridVec(), conf::gridCellsX, conf::gridCellsY, 0, 0);
+            grid.setDrawMode(true);
         }
 
-        if (grid.drawState())
-            grid.setGridCell(pathfinding.getFloodFillOrder());
+        if (grid.isDrawModeOn())
+            grid.setGridCell(path.getFloodFillOrder());
 
         // Draw all elements
         grid.drawGrid();

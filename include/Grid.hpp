@@ -32,33 +32,33 @@ class Grid
         ~Grid() = default;
 
         // Getters & Setters
-        bool drawState() const;
+        bool isDrawModeOn() const;
         float getGridCellSize() const;
         const std::vector<Cell>& getGridVec() const;
         const Rectangle& getGridRec() const;
-        void setDrawState(bool state);
+        void setDrawMode(bool mode);
         void setGridVec(int windowHeight);
         void setGridRec();
-        
-        void setGridCell(const std::vector<int>& order);
-
 
         // Member Functions
         Cell& at(int x, int y);
-        State updateCells(Vector2 mGridCurPos, Vector2 mGridLastPos, int paintKey);
+        State edit(int s1Key, Vector2 mGridCurPos, Vector2 mGridLastPos);
         void placeSpecialCell(int x, int y, Cell::Type paintType);
         void drawBresenhamLine(int x0, int y0, int x1, int y1, Cell::Type paintType);
         void clearSpecialCell(Cell::Type paintType);
         void drawGrid();
 
+        // CLEAN THIS
+        void setGridCell(const std::vector<int>& order);
+
     private:
-        bool _drawState;
-        int _startIndex;
-        int _finishIndex;
-        int _counter;
-        float _gridCellSize;
-        std::vector<Cell> _gridVec;
-        Rectangle _gridRec;
+        bool drawMode;
+        int startIndex;
+        int finishIndex;
+        int counter;
+        float gridCellSize;
+        std::vector<Cell> gridVec;
+        Rectangle gridRec;
 };
 
 #endif

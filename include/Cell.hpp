@@ -3,7 +3,7 @@
 /*  File:       Cell.hpp                                                                */
 /*  Purpose:    Header file for the Class Cell                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/04                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -38,8 +38,8 @@ class Cell
         void setType(Type type);
 
     private:
-        Rectangle _cell;
-        Type _type;
+        Rectangle cell;
+        Type type;
 };
 
 #endif

@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class Cell                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/01                                                              */
+/*  Updated:    2026/02/05                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -16,8 +16,8 @@
 //----------------------------------------------------------------------------------------
 
 Cell::Cell(float posX, float posY, float gridCellSize, Cell::Type type)
-:   _cell{posX, posY, gridCellSize, gridCellSize},
-    _type(type)
+:   cell{posX, posY, gridCellSize, gridCellSize},
+    type(type)
 {}
 
 
@@ -27,15 +27,15 @@ Cell::Cell(float posX, float posY, float gridCellSize, Cell::Type type)
 
 const Rectangle& Cell::getCell() const
 {
-    return _cell;
+    return cell;
 }
 
 Cell::Type Cell::getType() const
 {
-    return _type;
+    return type;
 }
 
 void Cell::setType(Type type)
 {
-    _type = type;
+    this->type = type;
 }

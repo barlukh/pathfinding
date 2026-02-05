@@ -14,21 +14,18 @@
 #include <vector>
 
 
-#include <iostream>
-
-
 //----------------------------------------------------------------------------------------
 // Constructors & Destructors
 //----------------------------------------------------------------------------------------
 
 Grid::Grid(int gridCellsX, int gridCellsY)
-:   _drawState(false),
-    _startIndex(-1),
-    _finishIndex(-1),
-    _counter(0),
-    _gridCellSize(0),
-    _gridVec(gridCellsX * gridCellsY),
-    _gridRec({0, 0, 0, 0})
+:   drawMode(false),
+    startIndex(-1),
+    finishIndex(-1),
+    counter(0),
+    gridCellSize(0),
+    gridVec(gridCellsX * gridCellsY),
+    gridRec({0, 0, 0, 0})
 {}
 
 
@@ -36,42 +33,42 @@ Grid::Grid(int gridCellsX, int gridCellsY)
 // Getters & Setters
 //----------------------------------------------------------------------------------------
 
-bool Grid::drawState() const
+bool Grid::isDrawModeOn() const
 {
-    return _drawState;
+    return drawMode;
 }
 
 float Grid::getGridCellSize() const
 {
-    return _gridCellSize;
+    return gridCellSize;
 }
 
 const std::vector<Cell>& Grid::getGridVec() const
 {
-    return _gridVec;
+    return gridVec;
 }
 
 const Rectangle& Grid::getGridRec() const
 {
-    return _gridRec;
+    return gridRec;
 }
 
-void Grid::setDrawState(bool state)
+void Grid::setDrawMode(bool mode)
 {
-    _drawState = state;
+    drawMode = mode;
 }
 
 void Grid::setGridVec(int windowHeight)
 {
-    _gridCellSize = static_cast<float>(windowHeight - conf::gridPad) / conf::gridCellsY;
+    gridCellSize = static_cast<float>(windowHeight - conf::gridPad) / conf::gridCellsY;
 
     for (int y = 0; y < conf::gridCellsY; y++)
     {
         for (int x = 0; x < conf::gridCellsX; x++)
         {
-            float posX = (static_cast<float>(x) * _gridCellSize) + conf::halfPad;
-            float posY = (static_cast<float>(y) * _gridCellSize) + conf::halfPad;
-            at(x, y) = Cell(posX, posY, _gridCellSize, Cell::Type::EMPTY);
+            float posX = (static_cast<float>(x) * gridCellSize) + conf::halfPad;
+            float posY = (static_cast<float>(y) * gridCellSize) + conf::halfPad;
+            at(x, y) = Cell(posX, posY, gridCellSize, Cell::Type::EMPTY);
         }
     }
 }
@@ -80,29 +77,10 @@ void Grid::setGridRec()
 {
     float x = conf::halfPad;
     float y = conf::halfPad;
-    float width = static_cast<float>(conf::gridCellsX) * _gridCellSize;
-    float height = static_cast<float>(conf::gridCellsY) * _gridCellSize;
+    float width = static_cast<float>(conf::gridCellsX) * gridCellSize;
+    float height = static_cast<float>(conf::gridCellsY) * gridCellSize;
 
-    _gridRec = {x, y, width, height};
-}
-
-void Grid::setGridCell(const std::vector<int>& order)
-{
-    if (_counter < static_cast<int>(order.size() - 1))
-    {
-        _gridVec[order[_counter]].setType(Cell::Type::VISITED);
-        _counter++;
-    }
-    else
-    {
-        _counter = 0;
-        _drawState = false;
-    }
-}
-
-Cell& Grid::at(int x, int y)
-{
-    return _gridVec[y * conf::gridCellsX + x];
+    gridRec = {x, y, width, height};
 }
 
 
@@ -110,17 +88,20 @@ Cell& Grid::at(int x, int y)
 // Member Functions
 //----------------------------------------------------------------------------------------
 
-Grid::State Grid::updateCells(Vector2 mGridCurPos, Vector2 mGridLastPos, int paintKey)
+Cell& Grid::at(int x, int y)
 {
-    int gridX = mGridCurPos.x;
-    int gridY = mGridCurPos.y;
+    return gridVec[y * conf::gridCellsX + x];
+}
+
+Grid::State Grid::edit(int s1Key, Vector2 mouseCur, Vector2 mouseLast)
+{
+    int gridX = mouseCur.x;
+    int gridY = mouseCur.y;
 
     if (gridX < 0 || gridX >= conf::gridCellsX || gridY < 0 || gridY >= conf::gridCellsY)
-    {
         return State::OUTOFBOUNDS;
-    }
 
-    Cell::Type paintType = static_cast<Cell::Type>(paintKey - 1);
+    Cell::Type paintType = static_cast<Cell::Type>(s1Key - 1);
 
     if (paintType == Cell::Type::START || paintType == Cell::Type::FINISH)
     {
@@ -128,14 +109,13 @@ Grid::State Grid::updateCells(Vector2 mGridCurPos, Vector2 mGridLastPos, int pai
         return State::MODIFIED;
     }
 
-    if (mGridLastPos.x == -1)
+    if (mouseLast.x == -1)
     {
         at(gridX, gridY).setType(paintType);
         return State::MODIFIED;
     }
 
-    drawBresenhamLine(mGridLastPos.x, mGridLastPos.y, gridX, gridY, paintType);
-
+    drawBresenhamLine(mouseLast.x, mouseLast.y, gridX, gridY, paintType);
     return State::MODIFIED;
 }
 
@@ -143,20 +123,14 @@ void Grid::placeSpecialCell(int x, int y, Cell::Type paintType)
 {
     int newIndex = y * conf::gridCellsX + x;
 
-    if (paintType == Cell::Type::START && _finishIndex == newIndex)
-    {
-        _finishIndex = -1;
-    }
-    else if (paintType == Cell::Type::FINISH && _startIndex == newIndex)
-    {
-        _startIndex = -1;
-    }
+    if (paintType == Cell::Type::START && finishIndex == newIndex)
+        finishIndex = -1;
+    else if (paintType == Cell::Type::FINISH && startIndex == newIndex)
+        startIndex = -1;
 
-    int& index = (paintType == Cell::Type::START) ? _startIndex : _finishIndex;
+    int& index = (paintType == Cell::Type::START) ? startIndex : finishIndex;
     if (index != -1)
-    {
-        _gridVec[index].setType(Cell::Type::EMPTY);
-    }
+        gridVec[index].setType(Cell::Type::EMPTY);
 
     at(x, y).setType(paintType);
     index = newIndex;
@@ -175,7 +149,6 @@ void Grid::drawBresenhamLine(int x0, int y0, int x1, int y1, Cell::Type paintTyp
         Cell& cell = at(x0, y0);
 
         clearSpecialCell(cell.getType());
-
         cell.setType(paintType);
 
         if (x0 == x1 && y0 == y1)
@@ -198,13 +171,9 @@ void Grid::drawBresenhamLine(int x0, int y0, int x1, int y1, Cell::Type paintTyp
 void Grid::clearSpecialCell(Cell::Type paintType)
 {
     if (paintType == Cell::Type::START)
-    {
-        _startIndex = -1;
-    }
+        startIndex = -1;
     else if (paintType == Cell::Type::FINISH)
-    {
-        _finishIndex = -1;
-    }
+        finishIndex = -1;
 }
 
 void Grid::drawGrid()
@@ -247,4 +216,18 @@ void Grid::drawGrid()
     }
 
     DrawRectangleLinesEx(getGridRec(), 2.0f, DARKGRAY);
+}
+
+void Grid::setGridCell(const std::vector<int>& order)
+{
+    if (counter < static_cast<int>(order.size() - 1))
+    {
+        gridVec[order[counter]].setType(Cell::Type::VISITED);
+        counter++;
+    }
+    else
+    {
+        counter = 0;
+        drawMode = false;
+    }
 }
