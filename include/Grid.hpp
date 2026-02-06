@@ -46,6 +46,7 @@ class Grid
         void drawBresenhamLine(int x0, int y0, int x1, int y1, Cell::Type paintType);
         void clearSpecialCell(Cell::Type paintType);
         std::vector<Cell>& updateGridVec();
+        void clear();
 
     private:
         int startIndex;

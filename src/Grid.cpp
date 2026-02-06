@@ -178,3 +178,9 @@ std::vector<Cell>& Grid::updateGridVec()
 {
     return gridVec;
 }
+
+void Grid::clear()
+{
+    for (Cell& cell : gridVec)
+        cell.setType(Cell::Type::EMPTY);
+}

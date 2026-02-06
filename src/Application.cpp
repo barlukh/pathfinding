@@ -84,7 +84,12 @@ void Application::run()
             DrawFPS(5, 5);
 
         // Detect user input
-        ui.detectInput();
+        if (!ui.isExecModeOn())
+            ui.detectInput();
+
+        // Clear (reset) the grid
+        if (ui.isClearModeOn())
+            grid.clear();
 
         // Paint the grid with the selected color
         if (ui.isPaintModeOn())
@@ -102,7 +107,7 @@ void Application::run()
         if (ui.isExecModeOn())
         {
             path.execute(ui.getS2Key(), grid.getStartIndex(), grid.updateGridVec());
-            if (!path.getInProgress())
+            if (!path.isInProgress())
                 ui.setExecMode(false);
         }
 

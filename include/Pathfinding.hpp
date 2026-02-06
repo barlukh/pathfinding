@@ -25,7 +25,7 @@ class Pathfinding
         ~Pathfinding() = default;
 
         // Getters & Setters
-        bool getInProgress() const;
+        bool isInProgress() const;
 
         // Member Functions
         void execute(int S2Key, int startIndex, std::vector<Cell>& gridVec);

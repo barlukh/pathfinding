@@ -27,6 +27,7 @@ class UI
         // Getters & Setters
         bool isPaintModeOn() const;
         bool isExecModeOn() const;
+        bool isClearModeOn() const;
         int getS1Key() const;
         int getS2Key() const;
         const Vector2& getMouseCur() const;
@@ -44,6 +45,7 @@ class UI
     private:
         bool paintMode;
         bool execMode;
+        bool clearMode;
         int s1Key;
         int s2Key;
         float textSize;

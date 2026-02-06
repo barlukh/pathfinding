@@ -30,7 +30,7 @@ Pathfinding::Pathfinding()
 // Getters & Setters
 //----------------------------------------------------------------------------------------
 
-bool Pathfinding::getInProgress() const
+bool Pathfinding::isInProgress() const
 {
     return inProgress;
 }
@@ -42,6 +42,9 @@ bool Pathfinding::getInProgress() const
 
 void Pathfinding::execute(int S2Key, int startIndex, std::vector<Cell>& gridVec)
 {
+    if (startIndex == -1)
+        return;
+
     if (!inProgress)
         currentAlgorithm = S2Key - 1;
 
@@ -83,11 +86,12 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startInde
 
         // Skip if not empty or already visited
         Cell::Type type = grid[index].getType();
-        if (type == Cell::Type::OBSTACLE || type == Cell::Type::VISITED)
+        if (type == Cell::Type::OBSTACLE || type == Cell::Type::VISITED || type == Cell::Type::FINISH)
             continue;
 
         // Mark as visited
-        grid[index].setType(Cell::Type::VISITED);
+        if (type != Cell::Type::START)
+            grid[index].setType(Cell::Type::VISITED);
 
         // Push neighbors onto stack
         cellStack.push({x + 1, y});

@@ -24,6 +24,7 @@
 UI::UI()
 :   paintMode(false),
     execMode(false),
+    clearMode(false),
     s1Key(1),
     s2Key(1),
     textSize(0),
@@ -49,6 +50,11 @@ bool UI::isPaintModeOn() const
 bool UI::isExecModeOn() const
 {
     return execMode;
+}
+
+bool UI::isClearModeOn() const
+{
+    return clearMode;
 }
 
 int UI::getS1Key() const
@@ -156,6 +162,12 @@ void UI::detectInput()
     // Detect execution input
     if (IsKeyPressed(KEY_SPACE))
         execMode = true;
+
+    // Detect reset input
+    if (IsKeyPressed(KEY_TAB))
+        clearMode = true;
+    else
+        clearMode = false;
 }
 
 void UI::drawUI()
