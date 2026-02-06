@@ -3,7 +3,7 @@
 /*  File:       Application.cpp                                                         */
 /*  Purpose:    Source file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/05                                                              */
+/*  Updated:    2026/02/06                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -92,7 +92,7 @@ void Application::run()
             ui.setMouseCur(grid.getGridCellSize());
 
             Grid::Pos p = grid.paint(ui.getS1Key(), ui.getMouseCur(), ui.getMouseLast());
-            if (p == Grid::Pos::WITHINBOUNDS)
+            if (p == Grid::Pos::IN_BOUNDS)
                 ui.setMouseLast(ui.getMouseCur());
             else
                 ui.setMouseLast({-1, -1});

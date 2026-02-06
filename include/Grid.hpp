@@ -3,7 +3,7 @@
 /*  File:       Grid.hpp                                                                */
 /*  Purpose:    Header file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/05                                                              */
+/*  Updated:    2026/02/06                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -20,8 +20,8 @@ class Grid
     public:
         enum class Pos
         {
-            WITHINBOUNDS,
-            OUTOFBOUNDS
+            IN_BOUNDS,
+            OUT_OF_BOUNDS
         };
 
         // Constructors & Destructors

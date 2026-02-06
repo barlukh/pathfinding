@@ -3,7 +3,7 @@
 /*  File:       Grid.cpp                                                                */
 /*  Purpose:    Source file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/05                                                              */
+/*  Updated:    2026/02/06                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -94,24 +94,24 @@ Grid::Pos Grid::paint(int s1Key, Vector2 mouseCur, Vector2 mouseLast)
     int gridY = mouseCur.y;
 
     if (gridX < 0 || gridX >= conf::gridCellsX || gridY < 0 || gridY >= conf::gridCellsY)
-        return Pos::OUTOFBOUNDS;
+        return Pos::OUT_OF_BOUNDS;
 
     Cell::Type paintType = static_cast<Cell::Type>(s1Key - 1);
 
     if (paintType == Cell::Type::START || paintType == Cell::Type::FINISH)
     {
         placeSpecialCell(gridX, gridY, paintType);
-        return Pos::WITHINBOUNDS;
+        return Pos::IN_BOUNDS;
     }
 
     if (mouseLast.x == -1)
     {
         at(gridX, gridY).setType(paintType);
-        return Pos::WITHINBOUNDS;
+        return Pos::IN_BOUNDS;
     }
 
     drawBresenhamLine(mouseLast.x, mouseLast.y, gridX, gridY, paintType);
-    return Pos::WITHINBOUNDS;
+    return Pos::IN_BOUNDS;
 }
 
 void Grid::placeSpecialCell(int x, int y, Cell::Type paintType)
