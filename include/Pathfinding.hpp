@@ -11,6 +11,7 @@
 #define PATHFINDING_HPP
 
 #include "Cell.hpp"
+#include <stack>
 #include <vector>
 
 
@@ -18,14 +19,20 @@ class Pathfinding
 {
     public:
         // Constructors & Destructors
-        Pathfinding() = default;
+        Pathfinding();
         Pathfinding(const Pathfinding& other) = delete;
         Pathfinding& operator=(const Pathfinding& other) = delete;
         ~Pathfinding() = default;
 
         // Member Functions
         void execute(int S2Key, int startIndex, std::vector<Cell>& gridVec);
-        void floodFill(std::vector<Cell>& gridVec, int w, int h, int x, int y);
+        void floodFill(std::vector<Cell>& gridVec, int w, int h, int cellsThisFrame);
+        bool deltaThresholdReached();
+
+    private:
+        int cellsThisFrame;
+        float deltaTimeAccumulator;
+        std::stack<std::pair<int, int>> cellStack;
 };
 
 #endif

@@ -86,7 +86,7 @@ void Application::run()
         // Detect user input
         ui.detectInput();
 
-        // Edit the grid with the selected color
+        // Paint the grid with the selected color
         if (ui.isPaintModeOn())
         {
             ui.setMouseCur(grid.getGridCellSize());

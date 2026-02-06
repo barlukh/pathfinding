@@ -211,5 +211,6 @@ void UI::drawGrid(const std::vector<Cell>& gridVec, const Rectangle& gridRec)
         }
     }
 
+    // Draw the outside rectangle to compensate for the inner line thickness
     DrawRectangleLinesEx(gridRec, 2.0f, DARKGRAY);
 }

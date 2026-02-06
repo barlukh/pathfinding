@@ -14,6 +14,16 @@
 
 
 //----------------------------------------------------------------------------------------
+// Constructors & Destructors
+//----------------------------------------------------------------------------------------
+
+Pathfinding::Pathfinding()
+:   cellsThisFrame(0),
+    deltaTimeAccumulator(0.0f)
+{}
+
+
+//----------------------------------------------------------------------------------------
 // Member Functions
 //----------------------------------------------------------------------------------------
 
@@ -22,22 +32,26 @@ void Pathfinding::execute(int S2Key, int startIndex, std::vector<Cell>& gridVec)
     int startX = startIndex % conf::gridCellsX;
     int startY = startIndex / conf::gridCellsX;
 
+    if (!deltaThresholdReached())
+        return;
+
     switch (S2Key)
     {
     case 1:
-        floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, startX, startY);
+        if (cellStack.empty())
+            cellStack.push({startX, startY});
+        floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, cellsThisFrame);
         break;    
     default:
         break;
     }
 }
 
-void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int x, int y)
+void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int cellsThisFrame)
 {
-    std::stack<std::pair<int, int>> cellStack;
-    cellStack.push({x, y});
+    int steps = 0;
 
-    while (!cellStack.empty())
+    while (!cellStack.empty() && steps < cellsThisFrame)
     {
         auto [x, y] = cellStack.top();
         cellStack.pop();
@@ -61,5 +75,18 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int x, int y)
         cellStack.push({x - 1, y});
         cellStack.push({x, y + 1});
         cellStack.push({x, y - 1});
+
+        steps++;
     }
+}
+
+bool Pathfinding::deltaThresholdReached()
+{
+    deltaTimeAccumulator += GetFrameTime() * conf::cellsPerSecond;
+    cellsThisFrame = (int)deltaTimeAccumulator;
+    if (cellsThisFrame == 0)
+        return false;
+
+    deltaTimeAccumulator -= cellsThisFrame;
+    return true;
 }

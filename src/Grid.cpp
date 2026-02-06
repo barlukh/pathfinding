@@ -92,23 +92,27 @@ Grid::Pos Grid::paint(int s1Key, Vector2 mouseCur, Vector2 mouseLast)
     int gridX = mouseCur.x;
     int gridY = mouseCur.y;
 
+    // Return if mouse position is out of grid bounds
     if (gridX < 0 || gridX >= conf::gridCellsX || gridY < 0 || gridY >= conf::gridCellsY)
         return Pos::OUT_OF_BOUNDS;
 
     Cell::Type paintType = static_cast<Cell::Type>(s1Key - 1);
 
+    // Handle the uniqueness of the 'start' an 'finish' cells
     if (paintType == Cell::Type::START || paintType == Cell::Type::FINISH)
     {
         placeSpecialCell(gridX, gridY, paintType);
         return Pos::IN_BOUNDS;
     }
 
+    // Place first cell
     if (mouseLast.x == -1)
     {
         at(gridX, gridY).setType(paintType);
         return Pos::IN_BOUNDS;
     }
 
+    // Draw line based on mouse delta
     drawBresenhamLine(mouseLast.x, mouseLast.y, gridX, gridY, paintType);
     return Pos::IN_BOUNDS;
 }

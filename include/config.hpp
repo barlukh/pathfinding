@@ -16,6 +16,13 @@
 
 namespace conf
 {
+    // Pathfinding
+    constexpr float cellsPerSecond = 1.0f;
+
+    // FPS
+    constexpr int fps = 1000;
+    constexpr bool showFps = true;
+
     // Window
     inline constexpr std::string_view title = "pathfinding";
 
@@ -32,7 +39,7 @@ namespace conf
     inline constexpr const std::string_view step1 =
         "Step 1 (place cells):\n\n"
         "Press 1 to place Start\n"
-        "Press 2 to place End\n"
+        "Press 2 to place Finish\n"
         "Press 3 to place Obstacles\n"
         "Press 4 to reset Cell\n";
 
@@ -41,7 +48,7 @@ namespace conf
 
     inline constexpr const std::array<std::string_view, 4> opts1 = {
         "Start",
-        "End",
+        "Finish",
         "Obstacles",
         "Empty"
     };
@@ -62,10 +69,6 @@ namespace conf
         "Dijkstra",
         "..."
     };
-
-    // FPS
-    constexpr int fps = 1000;
-    constexpr bool showFps = true;
 }
 
 #endif
