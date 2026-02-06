@@ -3,7 +3,7 @@
 /*  File:       UI.hpp                                                                  */
 /*  Purpose:    Header file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/05                                                              */
+/*  Updated:    2026/02/06                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -27,12 +27,10 @@ class UI
         // Getters & Setters
         bool isPaintModeOn() const;
         bool isExecModeOn() const;
-        bool isVisualizeModeOn() const;
         int getS1Key() const;
         int getS2Key() const;
         const Vector2& getMouseCur() const;
         const Vector2& getMouseLast() const;
-        void setVisualizeMode(bool mode);
         void setMouseCur(float gridCellSize);
         void setMouseLast(Vector2 pos);
 
@@ -45,7 +43,6 @@ class UI
     private:
         bool paintMode;
         bool execMode;
-        bool visualizeMode;
         int s1Key;
         int s2Key;
         float textSize;

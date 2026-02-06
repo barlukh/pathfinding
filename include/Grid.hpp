@@ -45,12 +45,11 @@ class Grid
         void placeSpecialCell(int x, int y, Cell::Type paintType);
         void drawBresenhamLine(int x0, int y0, int x1, int y1, Cell::Type paintType);
         void clearSpecialCell(Cell::Type paintType);
-        void visualize(const std::vector<int>& order);
+        std::vector<Cell>& updateGridVec();
 
     private:
         int startIndex;
         int finishIndex;
-        int counter;
         float gridCellSize;
         std::vector<Cell> gridVec;
         Rectangle gridRec;

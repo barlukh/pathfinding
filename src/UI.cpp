@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/05                                                              */
+/*  Updated:    2026/02/06                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -24,7 +24,6 @@
 UI::UI()
 :   paintMode(false),
     execMode(false),
-    visualizeMode(false),
     s1Key(1),
     s2Key(1),
     textSize(0),
@@ -52,11 +51,6 @@ bool UI::isExecModeOn() const
     return execMode;
 }
 
-bool UI::isVisualizeModeOn() const
-{
-    return visualizeMode;
-}
-
 int UI::getS1Key() const
 {
     return s1Key;
@@ -75,11 +69,6 @@ const Vector2& UI::getMouseCur() const
 const Vector2& UI::getMouseLast() const
 {
     return mouseLast;
-}
-
-void UI::setVisualizeMode(bool mode)
-{
-    visualizeMode = mode;
 }
 
 void UI::setMouseCur(float gridCellSize)
@@ -162,8 +151,6 @@ void UI::detectInput()
     // Detect execution input
     if (IsKeyPressed(KEY_SPACE))
         execMode = true;
-    else
-        execMode = false;
 }
 
 void UI::drawUI()

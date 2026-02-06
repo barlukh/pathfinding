@@ -22,7 +22,6 @@
 Grid::Grid(int gridCellsX, int gridCellsY)
 :   startIndex(-1),
     finishIndex(-1),
-    counter(0),
     gridCellSize(0),
     gridVec(gridCellsX * gridCellsY),
     gridRec({0, 0, 0, 0})
@@ -171,16 +170,7 @@ void Grid::clearSpecialCell(Cell::Type paintType)
         finishIndex = -1;
 }
 
-void Grid::visualize(const std::vector<int>& order)
+std::vector<Cell>& Grid::updateGridVec()
 {
-    if (counter < static_cast<int>(order.size() - 1))
-    {
-        gridVec[order[counter]].setType(Cell::Type::VISITED);
-        counter++;
-    }
-    else
-    {
-        counter = 0;
-        // visualizeMode = false;
-    }
+    return gridVec;
 }

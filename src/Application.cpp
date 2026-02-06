@@ -100,14 +100,7 @@ void Application::run()
 
         // Execute algorithm
         if (ui.isExecModeOn())
-        {
-            path.execute(ui.getS2Key(), grid.getStartIndex(), grid.getGridVec());
-            ui.setVisualizeMode(true);
-        }
-
-        // Visualize the executed algorithm
-        if (ui.isVisualizeModeOn())
-            grid.visualize(path.getPathfindOrder());
+            path.execute(ui.getS2Key(), grid.getStartIndex(), grid.updateGridVec());
 
         // Draw all elements
         ui.drawUI();
