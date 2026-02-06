@@ -71,6 +71,11 @@ const Vector2& UI::getMouseLast() const
     return mouseLast;
 }
 
+void UI::setExecMode(bool mode)
+{
+    execMode = mode;
+}
+
 void UI::setMouseCur(float gridCellSize)
 {
     Vector2 mousePos = GetMousePosition();

@@ -17,7 +17,7 @@
 namespace conf
 {
     // Pathfinding
-    constexpr float cellsPerSecond = 1.0f;
+    constexpr float cellsPerSecond = 500.0f;
 
     // FPS
     constexpr int fps = 1000;

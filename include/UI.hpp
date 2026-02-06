@@ -31,6 +31,7 @@ class UI
         int getS2Key() const;
         const Vector2& getMouseCur() const;
         const Vector2& getMouseLast() const;
+        void setExecMode(bool mode);
         void setMouseCur(float gridCellSize);
         void setMouseLast(Vector2 pos);
 

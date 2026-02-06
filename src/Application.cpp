@@ -100,7 +100,11 @@ void Application::run()
 
         // Execute algorithm
         if (ui.isExecModeOn())
+        {
             path.execute(ui.getS2Key(), grid.getStartIndex(), grid.updateGridVec());
+            if (!path.getInProgress())
+                ui.setExecMode(false);
+        }
 
         // Draw all elements
         ui.drawUI();

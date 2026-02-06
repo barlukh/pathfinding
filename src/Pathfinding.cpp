@@ -11,6 +11,7 @@
 #include "Cell.hpp"
 #include "config.hpp"
 #include <stack>
+#include <vector>
 
 
 //----------------------------------------------------------------------------------------
@@ -18,9 +19,21 @@
 //----------------------------------------------------------------------------------------
 
 Pathfinding::Pathfinding()
-:   cellsThisFrame(0),
+:   inProgress(false),
+    currentAlgorithm(0),
+    cellsThisFrame(0),
     deltaTimeAccumulator(0.0f)
 {}
+
+
+//----------------------------------------------------------------------------------------
+// Getters & Setters
+//----------------------------------------------------------------------------------------
+
+bool Pathfinding::getInProgress() const
+{
+    return inProgress;
+}
 
 
 //----------------------------------------------------------------------------------------
@@ -29,29 +42,35 @@ Pathfinding::Pathfinding()
 
 void Pathfinding::execute(int S2Key, int startIndex, std::vector<Cell>& gridVec)
 {
-    int startX = startIndex % conf::gridCellsX;
-    int startY = startIndex / conf::gridCellsX;
+    if (!inProgress)
+        currentAlgorithm = S2Key - 1;
 
-    if (!deltaThresholdReached())
-        return;
-
-    switch (S2Key)
+    switch (currentAlgorithm)
     {
-    case 1:
-        if (cellStack.empty())
-            cellStack.push({startX, startY});
-        floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, cellsThisFrame);
-        break;    
+    case 0:
+        floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, startIndex);
+        break;
     default:
         break;
     }
 }
 
-void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int cellsThisFrame)
+void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startIndex)
 {
-    int steps = 0;
+    if (!inProgress && cellStack.empty())
+    {
+        int startX = startIndex % conf::gridCellsX;
+        int startY = startIndex / conf::gridCellsX;
+        cellStack.push({startX, startY});
+        inProgress = true;
+    }
 
-    while (!cellStack.empty() && steps < cellsThisFrame)
+    if (!deltaThresholdReached())
+        return;
+
+    int processed = 0;
+
+    while (!cellStack.empty() && processed < cellsThisFrame)
     {
         auto [x, y] = cellStack.top();
         cellStack.pop();
@@ -76,8 +95,11 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int cellsThis
         cellStack.push({x, y + 1});
         cellStack.push({x, y - 1});
 
-        steps++;
+        processed++;
     }
+
+    if (cellStack.empty())
+        inProgress = false;
 }
 
 bool Pathfinding::deltaThresholdReached()

@@ -24,12 +24,17 @@ class Pathfinding
         Pathfinding& operator=(const Pathfinding& other) = delete;
         ~Pathfinding() = default;
 
+        // Getters & Setters
+        bool getInProgress() const;
+
         // Member Functions
         void execute(int S2Key, int startIndex, std::vector<Cell>& gridVec);
-        void floodFill(std::vector<Cell>& gridVec, int w, int h, int cellsThisFrame);
+        void floodFill(std::vector<Cell>& gridVec, int w, int h, int start);
         bool deltaThresholdReached();
 
     private:
+        bool inProgress;
+        int currentAlgorithm;
         int cellsThisFrame;
         float deltaTimeAccumulator;
         std::stack<std::pair<int, int>> cellStack;
