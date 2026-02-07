@@ -10,8 +10,8 @@
 #include "Pathfinding.hpp"
 #include "Cell.hpp"
 #include "config.hpp"
-#include <queue>
-#include <stack>
+#include <deque>
+#include <utility>
 #include <vector>
 
 
@@ -53,113 +53,89 @@ void Pathfinding::execute(int S2Key, int startIndex, std::vector<Cell>& gridVec)
     switch (currentAlgorithm)
     {
     case 0:
-        DFSFFill(gridVec, conf::gridCellsX, conf::gridCellsY, startIndex);
+        floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, startIndex);
         break;
     case 1:
-        BFSFfill(gridVec, conf::gridCellsX, conf::gridCellsY, startIndex);
+        floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, startIndex);
         break;
     default:
         break;
     }
 }
 
-void Pathfinding::DFSFFill(std::vector<Cell>& grid, int w, int h, int startIndex)
+void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startIndex)
 {
-    // Push start cell onto stack
-    if (!inProgress && cellStack.empty())
+    // Push start cell if needed
+    if (!inProgress && cellDeque.empty())
     {
         int startX = startIndex % conf::gridCellsX;
         int startY = startIndex / conf::gridCellsX;
-        cellStack.push({startX, startY});
+        cellDeque.push_back({startX, startY});
         inProgress = true;
     }
 
-    // Proceed only when delta time reaches a threshold
+    // Only proceed if enough delta time has passed
     if (!deltaThresholdReached())
         return;
 
     int processed = 0;
 
-    while (!cellStack.empty() && processed < cellsThisFrame)
+    while (!cellDeque.empty() && processed < cellsThisFrame)
     {
-        auto [x, y] = cellStack.top();
-        cellStack.pop();
+        std::pair<int,int> cell;
 
-        // Check bounds
-        if (x < 0 || x >= w || y < 0 || y >= h)
-            continue;
+        // Select DFS or BFS
+        if (currentAlgorithm == 0)
+        {
+            // DFS → take from back
+            cell = cellDeque.back();
+            cellDeque.pop_back();
+        }
+        else
+        {
+            // BFS → take from front
+            cell = cellDeque.front();
+            cellDeque.pop_front();
+        }
+
+        auto [x, y] = cell;
 
         int index = y * w + x;
+        Cell::Type cellType = grid[index].getType();
 
-        // Skip wall, visited and finish cells
-        Cell::Type type = grid[index].getType();
-        if (type != Cell::Type::START && type != Cell::Type::EMPTY)
+        // Skip walls / already visited / finish
+        if (cellType != Cell::Type::START && cellType != Cell::Type::EMPTY)
             continue;
 
-        // Mark as visited
-        if (type == Cell::Type::EMPTY)
+        // Mark current cell as visited
+        if (cellType == Cell::Type::EMPTY)
             grid[index].setType(Cell::Type::VISITED);
 
-        // Push neighbors onto stack
-        cellStack.push({x + 1, y});
-        cellStack.push({x - 1, y});
-        cellStack.push({x, y + 1});
-        cellStack.push({x, y - 1});
+        // Helper lambda to push neighbors
+        auto tryPush = [&](int nx, int ny)
+        {
+            if (nx < 0 || nx >= w || ny < 0 || ny >= h)
+                return;
+
+            int nIndex = ny * w + nx;
+            Cell::Type nType = grid[nIndex].getType();
+
+            // Only push if empty or start
+            if (nType == Cell::Type::EMPTY)
+                cellDeque.push_back({nx, ny});
+        };
+
+        // Push 4 neighbors
+        tryPush(x + 1, y);
+        tryPush(x - 1, y);
+        tryPush(x, y + 1);
+        tryPush(x, y - 1);
 
         processed++;
     }
 
-    if (cellStack.empty())
-        inProgress = false;
-}
-
-void Pathfinding::BFSFfill(std::vector<Cell>& grid, int w, int h, int startIndex)
-{
-    // Push start cell onto stack
-    if (!inProgress && cellQueue.empty())
-    {
-        int startX = startIndex % conf::gridCellsX;
-        int startY = startIndex / conf::gridCellsX;
-        cellQueue.push({startX, startY});
-        inProgress = true;
-    }
-
-    // Proceed only when delta time reaches a threshold
-    if (!deltaThresholdReached())
-        return;
-
-    int processed = 0;
-
-    while (!cellQueue.empty() && processed < cellsThisFrame)
-    {
-        auto [x, y] = cellQueue.front();
-        cellQueue.pop();
-
-        // Check bounds
-        if (x < 0 || x >= w || y < 0 || y >= h)
-            continue;
-
-        int index = y * w + x;
-
-        // Skip wall, visited and finish cells
-        Cell::Type type = grid[index].getType();
-        if (type != Cell::Type::START && type != Cell::Type::EMPTY)
-            continue;
-
-        // Mark as visited
-        if (type == Cell::Type::EMPTY)
-            grid[index].setType(Cell::Type::VISITED);
-
-        // Push neighbors onto stack
-        cellQueue.push({x + 1, y});
-        cellQueue.push({x - 1, y});
-        cellQueue.push({x, y + 1});
-        cellQueue.push({x, y - 1});
-
-        processed++;
-    }
-
-    if (cellQueue.empty())
+    // Done when deque is empty
+    if (cellDeque.empty())
         inProgress = false;
 }
 
