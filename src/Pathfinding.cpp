@@ -3,13 +3,14 @@
 /*  File:       Pathfinding.cpp                                                         */
 /*  Purpose:    Source file for the Class Pathfinding                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/06                                                              */
+/*  Updated:    2026/02/07                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
 #include "Pathfinding.hpp"
 #include "Cell.hpp"
 #include "config.hpp"
+#include <queue>
 #include <stack>
 #include <vector>
 
@@ -42,6 +43,7 @@ bool Pathfinding::isInProgress() const
 
 void Pathfinding::execute(int S2Key, int startIndex, std::vector<Cell>& gridVec)
 {
+    // Check if start cell is actually set
     if (startIndex == -1)
         return;
 
@@ -51,15 +53,19 @@ void Pathfinding::execute(int S2Key, int startIndex, std::vector<Cell>& gridVec)
     switch (currentAlgorithm)
     {
     case 0:
-        floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, startIndex);
+        DFSFFill(gridVec, conf::gridCellsX, conf::gridCellsY, startIndex);
+        break;
+    case 1:
+        BFSFfill(gridVec, conf::gridCellsX, conf::gridCellsY, startIndex);
         break;
     default:
         break;
     }
 }
 
-void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startIndex)
+void Pathfinding::DFSFFill(std::vector<Cell>& grid, int w, int h, int startIndex)
 {
+    // Push start cell onto stack
     if (!inProgress && cellStack.empty())
     {
         int startX = startIndex % conf::gridCellsX;
@@ -68,6 +74,7 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startInde
         inProgress = true;
     }
 
+    // Proceed only when delta time reaches a threshold
     if (!deltaThresholdReached())
         return;
 
@@ -84,13 +91,13 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startInde
 
         int index = y * w + x;
 
-        // Skip if not empty or already visited
+        // Skip wall, visited and finish cells
         Cell::Type type = grid[index].getType();
-        if (type == Cell::Type::OBSTACLE || type == Cell::Type::VISITED || type == Cell::Type::FINISH)
+        if (type != Cell::Type::START && type != Cell::Type::EMPTY)
             continue;
 
         // Mark as visited
-        if (type != Cell::Type::START)
+        if (type == Cell::Type::EMPTY)
             grid[index].setType(Cell::Type::VISITED);
 
         // Push neighbors onto stack
@@ -103,6 +110,56 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startInde
     }
 
     if (cellStack.empty())
+        inProgress = false;
+}
+
+void Pathfinding::BFSFfill(std::vector<Cell>& grid, int w, int h, int startIndex)
+{
+    // Push start cell onto stack
+    if (!inProgress && cellQueue.empty())
+    {
+        int startX = startIndex % conf::gridCellsX;
+        int startY = startIndex / conf::gridCellsX;
+        cellQueue.push({startX, startY});
+        inProgress = true;
+    }
+
+    // Proceed only when delta time reaches a threshold
+    if (!deltaThresholdReached())
+        return;
+
+    int processed = 0;
+
+    while (!cellQueue.empty() && processed < cellsThisFrame)
+    {
+        auto [x, y] = cellQueue.front();
+        cellQueue.pop();
+
+        // Check bounds
+        if (x < 0 || x >= w || y < 0 || y >= h)
+            continue;
+
+        int index = y * w + x;
+
+        // Skip wall, visited and finish cells
+        Cell::Type type = grid[index].getType();
+        if (type != Cell::Type::START && type != Cell::Type::EMPTY)
+            continue;
+
+        // Mark as visited
+        if (type == Cell::Type::EMPTY)
+            grid[index].setType(Cell::Type::VISITED);
+
+        // Push neighbors onto stack
+        cellQueue.push({x + 1, y});
+        cellQueue.push({x - 1, y});
+        cellQueue.push({x, y + 1});
+        cellQueue.push({x, y - 1});
+
+        processed++;
+    }
+
+    if (cellQueue.empty())
         inProgress = false;
 }
 

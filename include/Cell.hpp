@@ -3,7 +3,7 @@
 /*  File:       Cell.hpp                                                                */
 /*  Purpose:    Header file for the Class Cell                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/05                                                              */
+/*  Updated:    2026/02/07                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -20,7 +20,7 @@ class Cell
         {
             START,
             FINISH,
-            OBSTACLE,
+            WALL,
             EMPTY,
             VISITED
         };

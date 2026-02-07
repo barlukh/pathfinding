@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/06                                                              */
+/*  Updated:    2026/02/07                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -209,7 +209,7 @@ void UI::drawGrid(const std::vector<Cell>& gridVec, const Rectangle& gridRec)
             case Cell::Type::FINISH:
                 color = RED;
                 break;
-            case Cell::Type::OBSTACLE:
+            case Cell::Type::WALL:
                 color = BLACK;
                 break;
             case Cell::Type::EMPTY:

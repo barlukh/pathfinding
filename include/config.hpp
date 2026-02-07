@@ -3,7 +3,7 @@
 /*  File:       config.hpp                                                              */
 /*  Purpose:    Configuration values used by the application                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/06                                                              */
+/*  Updated:    2026/02/07                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -40,7 +40,7 @@ namespace conf
         "Step 1 (place cells):\n\n"
         "Press 1 to place Start\n"
         "Press 2 to place Finish\n"
-        "Press 3 to place Obstacles\n"
+        "Press 3 to place Wall\n"
         "Press 4 to reset Cell\n";
 
     inline constexpr const std::string_view selection1 =
@@ -49,25 +49,25 @@ namespace conf
     inline constexpr const std::array<std::string_view, 4> opts1 = {
         "Start",
         "Finish",
-        "Obstacles",
+        "Wall",
         "Empty"
     };
 
     inline constexpr const std::string_view step2 =
         "Step 2 (select algorithm):\n\n"
-        "Press Q to use Flood Fill\n"
-        "Press W to use A*\n"
-        "Press E to use Dijkstra's\n"
-        "Press R to use ...";
+        "Press Q to use DFS FF\n"
+        "Press W to use BFS FF\n"
+        "Press E to use A*\n"
+        "Press R to use Dijkstra's\n";
 
     inline constexpr const std::string_view selection2 =
         "Current selection: ";
 
     inline constexpr const std::array<std::string_view, 4> opts2 = {
-        "Flood Fill",
+        "DFS FF",
+        "BFS FF",
         "A*",
-        "Dijkstra",
-        "..."
+        "Dijkstra"
     };
 }
 
