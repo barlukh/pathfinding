@@ -3,7 +3,7 @@
 /*  File:       Grid.cpp                                                                */
 /*  Purpose:    Source file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/06                                                              */
+/*  Updated:    2026/02/09                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -179,7 +179,16 @@ std::vector<Cell>& Grid::updateGridVec()
     return gridVec;
 }
 
-void Grid::clear()
+void Grid::partialClear()
+{
+    for (Cell& cell : gridVec)
+    {
+        if (cell.getType() == Cell::Type::VISITED)
+            cell.setType(Cell::Type::EMPTY);
+    }
+}
+
+void Grid::fullClear()
 {
     for (Cell& cell : gridVec)
         cell.setType(Cell::Type::EMPTY);

@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/07                                                              */
+/*  Updated:    2026/02/09                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -24,7 +24,8 @@
 UI::UI()
 :   paintMode(false),
     execMode(false),
-    clearMode(false),
+    partialClearMode(false),
+    fullClearMode(false),
     s1Key(1),
     s2Key(1),
     textSize(0),
@@ -52,9 +53,14 @@ bool UI::isExecModeOn() const
     return execMode;
 }
 
-bool UI::isClearModeOn() const
+bool UI::isPartialClearModeOn() const
 {
-    return clearMode;
+    return partialClearMode;
+}
+
+bool UI::isFullClearModeOn() const
+{
+    return fullClearMode;
 }
 
 int UI::getS1Key() const
@@ -160,14 +166,19 @@ void UI::detectInput()
     }
 
     // Detect execution input
-    if (IsKeyPressed(KEY_SPACE))
+    if (IsKeyPressed(KEY_SPACE) && !paintMode)
         execMode = true;
 
     // Detect reset input
-    if (IsKeyPressed(KEY_TAB))
-        clearMode = true;
+    if (IsKeyPressed(KEY_C))
+        partialClearMode = true;
     else
-        clearMode = false;
+        partialClearMode = false;
+    
+    if (IsKeyPressed(KEY_V))
+        fullClearMode = true;
+    else
+        fullClearMode = false;
 }
 
 void UI::drawUI()

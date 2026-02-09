@@ -3,7 +3,7 @@
 /*  File:       UI.hpp                                                                  */
 /*  Purpose:    Header file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/06                                                              */
+/*  Updated:    2026/02/09                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -27,7 +27,8 @@ class UI
         // Getters & Setters
         bool isPaintModeOn() const;
         bool isExecModeOn() const;
-        bool isClearModeOn() const;
+        bool isPartialClearModeOn() const;
+        bool isFullClearModeOn() const;
         int getS1Key() const;
         int getS2Key() const;
         const Vector2& getMouseCur() const;
@@ -45,7 +46,8 @@ class UI
     private:
         bool paintMode;
         bool execMode;
-        bool clearMode;
+        bool partialClearMode;
+        bool fullClearMode;
         int s1Key;
         int s2Key;
         float textSize;

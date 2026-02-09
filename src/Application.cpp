@@ -3,7 +3,7 @@
 /*  File:       Application.cpp                                                         */
 /*  Purpose:    Source file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/06                                                              */
+/*  Updated:    2026/02/09                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -88,8 +88,10 @@ void Application::run()
             ui.detectInput();
 
         // Clear (reset) the grid
-        if (ui.isClearModeOn())
-            grid.clear();
+        if (ui.isPartialClearModeOn())
+            grid.partialClear();
+        else if (ui.isFullClearModeOn())
+            grid.fullClear();
 
         // Paint the grid with the selected color
         if (ui.isPaintModeOn())

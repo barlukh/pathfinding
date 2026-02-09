@@ -3,7 +3,7 @@
 /*  File:       Grid.hpp                                                                */
 /*  Purpose:    Header file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/06                                                              */
+/*  Updated:    2026/02/09                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -46,7 +46,8 @@ class Grid
         void drawBresenhamLine(int x0, int y0, int x1, int y1, Cell::Type paintType);
         void clearSpecialCell(Cell::Type paintType);
         std::vector<Cell>& updateGridVec();
-        void clear();
+        void partialClear();
+        void fullClear();
 
     private:
         int startIndex;
