@@ -229,8 +229,11 @@ void UI::drawGrid(const std::vector<Cell>& gridVec, const Rectangle& gridRec)
             case Cell::Type::VISITED:
                 color = YELLOW;
                 break;
-            default:
+            case Cell::Type::PUSHED:
                 color = RAYWHITE;
+                break;
+            default:
+                color = WHITE;
                 break;
             }
 

@@ -3,7 +3,7 @@
 /*  File:       Pathfinding.cpp                                                         */
 /*  Purpose:    Source file for the Class Pathfinding                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/07                                                              */
+/*  Updated:    2026/02/09                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -53,8 +53,6 @@ void Pathfinding::execute(int S2Key, int startIndex, std::vector<Cell>& gridVec)
     switch (currentAlgorithm)
     {
     case 0:
-        floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, startIndex);
-        break;
     case 1:
         floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, startIndex);
         break;
@@ -103,13 +101,22 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startInde
         int index = y * w + x;
         Cell::Type cellType = grid[index].getType();
 
-        // Skip walls / already visited / finish
-        if (cellType != Cell::Type::START && cellType != Cell::Type::EMPTY)
-            continue;
+        // Skip walls / already visited / finish, exclude start from changing state
+        switch (cellType)
+        {
+            case Cell::Type::WALL:
+            case Cell::Type::VISITED:
+            case Cell::Type::FINISH:
+                continue;
 
-        // Mark current cell as visited
-        if (cellType == Cell::Type::EMPTY)
-            grid[index].setType(Cell::Type::VISITED);
+            case Cell::Type::EMPTY:
+            case Cell::Type::PUSHED:
+                grid[index].setType(Cell::Type::VISITED);
+                break;
+
+            case Cell::Type::START:
+                break;
+        }
 
         // Helper lambda to push neighbors
         auto tryPush = [&](int nx, int ny)
@@ -120,9 +127,12 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startInde
             int nIndex = ny * w + nx;
             Cell::Type nType = grid[nIndex].getType();
 
-            // Only push if empty or start
+            // Only push if empty
             if (nType == Cell::Type::EMPTY)
+            {
+                grid[nIndex].setType(Cell::Type::PUSHED);
                 cellDeque.push_back({nx, ny});
+            }
         };
 
         // Push 4 neighbors
