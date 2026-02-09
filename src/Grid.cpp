@@ -108,7 +108,10 @@ Grid::Pos Grid::paint(int s1Key, Vector2 mouseCur, Vector2 mouseLast)
     // Place first cell
     if (mouseLast.x == -1)
     {
-        at(gridX, gridY).setType(paintType);
+        Cell& cell = at(gridX, gridY);
+
+        clearSpecialCell(cell.getType());
+        cell.setType(paintType);
         return Pos::IN_BOUNDS;
     }
 
