@@ -3,7 +3,7 @@
 /*  File:       Application.cpp                                                         */
 /*  Purpose:    Source file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/09                                                              */
+/*  Updated:    2026/02/12                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -80,9 +80,6 @@ void Application::run()
 
         ClearBackground(RAYWHITE);
 
-        if (conf::showFps)
-            DrawFPS(5, 5);
-
         // Detect user input
         if (!ui.isExecModeOn())
             ui.detectInput();
@@ -116,6 +113,9 @@ void Application::run()
         // Draw all elements
         ui.drawUI();
         ui.drawGrid(grid.getGridVec(), grid.getGridRec());
+
+        if (conf::showFps)
+            DrawFPS(2, 2);
 
         EndDrawing();
     }

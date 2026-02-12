@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/09                                                              */
+/*  Updated:    2026/02/12                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -35,6 +35,8 @@ UI::UI()
     select1Pos({0, 0}),
     step2Pos({0, 0}),
     select2Pos({0, 0}),
+    colorIndexPos({0, 0}),
+    recIndex0({0, 0, 0, 0}),
     font(GetFontDefault())
 {}
 
@@ -126,6 +128,22 @@ void UI::calcUIPosValues(const Rectangle& gridRec)
 
     // Set text size
     textSize = gridRec.width / conf::textScaling;
+
+    // Set position of the color index text
+    colorIndexPos.x = xOffset + textSize * 1.5;
+    colorIndexPos.y = select2Pos.y + (gridRec.height / conf::offsetYScaling);
+
+    // Set position of the rectangle 0 index
+    recIndex0.x = xOffset;
+    recIndex0.y = select2Pos.y + (gridRec.height / conf::offsetYScaling);
+    recIndex0.height = textSize;
+    recIndex0.width = textSize;
+
+    // Set position of the rectangle 0 index
+    recIndex0.x = xOffset;
+    recIndex0.y = select2Pos.y + (gridRec.height / conf::offsetYScaling);
+    recIndex0.height = textSize;
+    recIndex0.width = textSize;
 }
 
 void UI::detectInput()
@@ -198,6 +216,17 @@ void UI::drawUI()
     s2 = conf::opts2[s2Key - 1].data();
     s =  s1 + s2;
     DrawTextEx(font, s.c_str(), select2Pos, textSize, conf::textSpacing, DARKPURPLE);
+
+    // Draw color index rectangles
+    DrawRectangleRec(recIndex0, GREEN);
+    DrawRectangleLinesEx(recIndex0, 2.0f, BLACK);
+
+    DrawRectangleRec(recIndex0, GREEN);
+    DrawRectangleLinesEx(recIndex0, 2.0f, BLACK);
+
+    // Draw color index text
+    s = std::string(conf::colorIndex.data());
+    DrawTextEx(font, s.c_str(), colorIndexPos, textSize, conf::textSpacing, BLACK);
 }
 
 void UI::drawGrid(const std::vector<Cell>& gridVec, const Rectangle& gridRec)

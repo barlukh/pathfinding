@@ -3,7 +3,7 @@
 /*  File:       UI.hpp                                                                  */
 /*  Purpose:    Header file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/09                                                              */
+/*  Updated:    2026/02/12                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -57,6 +57,8 @@ class UI
         Vector2 select1Pos;
         Vector2 step2Pos;
         Vector2 select2Pos;
+        Vector2 colorIndexPos;
+        Rectangle recIndex0;
         Font font;
 };
 
