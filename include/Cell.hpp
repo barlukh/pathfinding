@@ -3,7 +3,7 @@
 /*  File:       Cell.hpp                                                                */
 /*  Purpose:    Header file for the Class Cell                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/09                                                              */
+/*  Updated:    2026/02/13                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -23,7 +23,7 @@ class Cell
             WALL,
             EMPTY,
             VISITED,
-            PUSHED
+            QUEUED
         };
 
         // Constructors & Destructors

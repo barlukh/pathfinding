@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/12                                                              */
+/*  Updated:    2026/02/13                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -35,8 +35,14 @@ UI::UI()
     select1Pos({0, 0}),
     step2Pos({0, 0}),
     select2Pos({0, 0}),
+    step3Pos({0, 0}),
     colorIndexPos({0, 0}),
     recIndex0({0, 0, 0, 0}),
+    recIndex1({0, 0, 0, 0}),
+    recIndex2({0, 0, 0, 0}),
+    recIndex3({0, 0, 0, 0}),
+    recIndex4({0, 0, 0, 0}),
+    recIndex5({0, 0, 0, 0}),
     font(GetFontDefault())
 {}
 
@@ -126,24 +132,52 @@ void UI::calcUIPosValues(const Rectangle& gridRec)
     select2Pos.x = xOffset;
     select2Pos.y = step2Pos.y + (gridRec.height / conf::offsetYScaling);
 
+    // Set position of the 'Step 3' info panel
+    step3Pos.x = xOffset;
+    step3Pos.y = select2Pos.y + (gridRec.height / conf::offsetYScaling);
+
     // Set text size
     textSize = gridRec.width / conf::textScaling;
 
     // Set position of the color index text
     colorIndexPos.x = xOffset + textSize * 1.5;
-    colorIndexPos.y = select2Pos.y + (gridRec.height / conf::offsetYScaling);
+    colorIndexPos.y = step3Pos.y + (gridRec.height / conf::offsetYScaling);
 
     // Set position of the rectangle 0 index
     recIndex0.x = xOffset;
-    recIndex0.y = select2Pos.y + (gridRec.height / conf::offsetYScaling);
-    recIndex0.height = textSize;
-    recIndex0.width = textSize;
+    recIndex0.y = step3Pos.y + (gridRec.height / conf::offsetYScaling);
+    recIndex0.height = textSize - 2;
+    recIndex0.width = textSize - 2;
 
-    // Set position of the rectangle 0 index
-    recIndex0.x = xOffset;
-    recIndex0.y = select2Pos.y + (gridRec.height / conf::offsetYScaling);
-    recIndex0.height = textSize;
-    recIndex0.width = textSize;
+    // Set position of the rectangle 1 index
+    recIndex1.x = xOffset;
+    recIndex1.y = recIndex0.y + textSize + 2;
+    recIndex1.height = textSize - 2;
+    recIndex1.width = textSize - 2;
+
+    // Set position of the rectangle 2 index
+    recIndex2.x = xOffset;
+    recIndex2.y = recIndex1.y + textSize + 2;
+    recIndex2.height = textSize - 2;
+    recIndex2.width = textSize - 2;
+
+    // Set position of the rectangle 3 index
+    recIndex3.x = xOffset;
+    recIndex3.y = recIndex2.y + textSize + 2;
+    recIndex3.height = textSize - 2;
+    recIndex3.width = textSize - 2;
+
+    // Set position of the rectangle 4 index
+    recIndex4.x = xOffset;
+    recIndex4.y = recIndex3.y + textSize + 2;
+    recIndex4.height = textSize - 2;
+    recIndex4.width = textSize - 2;
+
+    // Set position of the rectangle 5 index
+    recIndex5.x = xOffset;
+    recIndex5.y = recIndex4.y + textSize + 2;
+    recIndex5.height = textSize - 2;
+    recIndex5.width = textSize - 2;
 }
 
 void UI::detectInput()
@@ -217,12 +251,27 @@ void UI::drawUI()
     s =  s1 + s2;
     DrawTextEx(font, s.c_str(), select2Pos, textSize, conf::textSpacing, DARKPURPLE);
 
+    // Draw 'Step 3'
+    DrawTextEx(font, conf::step3.data(), step3Pos, textSize, conf::textSpacing, BLACK);
+
     // Draw color index rectangles
-    DrawRectangleRec(recIndex0, GREEN);
+    DrawRectangleRec(recIndex0, BLUE);
     DrawRectangleLinesEx(recIndex0, 2.0f, BLACK);
 
-    DrawRectangleRec(recIndex0, GREEN);
-    DrawRectangleLinesEx(recIndex0, 2.0f, BLACK);
+    DrawRectangleRec(recIndex1, RED);
+    DrawRectangleLinesEx(recIndex1, 2.0f, BLACK);
+
+    DrawRectangleRec(recIndex2, BLACK);
+    DrawRectangleLinesEx(recIndex2, 2.0f, BLACK);
+
+    DrawRectangleRec(recIndex3, LIGHTGRAY);
+    DrawRectangleLinesEx(recIndex3, 2.0f, BLACK);
+
+    DrawRectangleRec(recIndex4, YELLOW);
+    DrawRectangleLinesEx(recIndex4, 2.0f, BLACK);
+
+    DrawRectangleRec(recIndex5, RAYWHITE);
+    DrawRectangleLinesEx(recIndex5, 2.0f, BLACK);
 
     // Draw color index text
     s = std::string(conf::colorIndex.data());
@@ -258,7 +307,7 @@ void UI::drawGrid(const std::vector<Cell>& gridVec, const Rectangle& gridRec)
             case Cell::Type::VISITED:
                 color = YELLOW;
                 break;
-            case Cell::Type::PUSHED:
+            case Cell::Type::QUEUED:
                 color = RAYWHITE;
                 break;
             default:

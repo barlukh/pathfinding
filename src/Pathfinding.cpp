@@ -3,7 +3,7 @@
 /*  File:       Pathfinding.cpp                                                         */
 /*  Purpose:    Source file for the Class Pathfinding                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/09                                                              */
+/*  Updated:    2026/02/13                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -110,7 +110,7 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startInde
                 continue;
 
             case Cell::Type::EMPTY:
-            case Cell::Type::PUSHED:
+            case Cell::Type::QUEUED:
                 grid[index].setType(Cell::Type::VISITED);
                 break;
 
@@ -130,7 +130,7 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int startInde
             // Only push if empty
             if (nType == Cell::Type::EMPTY)
             {
-                grid[nIndex].setType(Cell::Type::PUSHED);
+                grid[nIndex].setType(Cell::Type::QUEUED);
                 cellDeque.push_back({nx, ny});
             }
         };

@@ -3,7 +3,7 @@
 /*  File:       config.hpp                                                              */
 /*  Purpose:    Configuration values used by the application                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/12                                                              */
+/*  Updated:    2026/02/13                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -70,11 +70,18 @@ namespace conf
         "Dijkstra"
     };
 
+    inline constexpr std::string_view step3 =
+        "Step 3 (execute / reset):\n\n"
+        "Press Space to execute\n"
+        "Press C to reset result\n"
+        "Press V to reset all\n";
+
     inline constexpr std::string_view colorIndex =
         "- Start\n"
         "- Finish\n"
         "- Wall\n"
         "- Empty\n"
+        "- Visited\n"
         "- Queued\n";
 }
 
