@@ -191,7 +191,8 @@ void Grid::partialClear()
 {
     for (Cell& cell : gridVec)
     {
-        if (cell.getType() == Cell::Type::VISITED)
+        Cell::Type t = cell.getType();
+        if (t == Cell::Type::VISITED || t == Cell::Type::QUEUED || t == Cell::Type::PATH)
             cell.setType(Cell::Type::EMPTY);
     }
 }

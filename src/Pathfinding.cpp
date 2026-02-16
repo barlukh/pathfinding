@@ -24,7 +24,11 @@ Pathfinding::Pathfinding()
 :   inProgress(false),
     currentAlgorithm(0),
     cellsThisFrame(0),
-    deltaTimeAccumulator(0.0f)
+    deltaTimeAccumulator(0.0f),
+    cellDeque(),
+    cellQueue(),
+    dist(),
+    parent()
 {}
 
 
@@ -58,20 +62,19 @@ void Pathfinding::exec(std::vector<Cell>& gridVec, int S2Key, int start, int goa
         floodFill(gridVec, conf::gridCellsX, conf::gridCellsY, start);
         break;
     case 2:
-        bfsPathfind(gridVec, conf::gridCellsX, conf::gridCellsY, start, goal);
+        bfsPath(gridVec, conf::gridCellsX, conf::gridCellsY, start, goal);
     default:
         break;
     }
 }
 
-void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int start)
+void Pathfinding::floodFill(std::vector<Cell>& gridVec, int w, int h, int start)
 {
     // Push start cell if needed
-    if (!inProgress && cellDeque.empty())
+    if (!inProgress)
     {
-        int startX = start % conf::gridCellsX;
-        int startY = start / conf::gridCellsX;
-        cellDeque.push_back({startX, startY});
+        cellDeque.clear();
+        cellDeque.push_back(start);
         inProgress = true;
     }
 
@@ -83,26 +86,23 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int start)
 
     while (!cellDeque.empty() && processed < cellsThisFrame)
     {
-        std::pair<int,int> cell;
+        int current;
 
         // Select DFS or BFS
         if (currentAlgorithm == 0)
         {
             // DFS → take from back
-            cell = cellDeque.back();
+            current = cellDeque.back();
             cellDeque.pop_back();
         }
         else
         {
             // BFS → take from front
-            cell = cellDeque.front();
+            current = cellDeque.front();
             cellDeque.pop_front();
         }
 
-        auto [x, y] = cell;
-
-        int index = y * w + x;
-        Cell::Type cellType = grid[index].getType();
+        Cell::Type cellType = gridVec[current].getType();
 
         // Skip walls / already visited / goal, exclude start from changing state
         switch (cellType)
@@ -110,16 +110,20 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int start)
             case Cell::Type::WALL:
             case Cell::Type::VISITED:
             case Cell::Type::GOAL:
+            case Cell::Type::PATH:
                 continue;
 
             case Cell::Type::EMPTY:
             case Cell::Type::QUEUED:
-                grid[index].setType(Cell::Type::VISITED);
+                gridVec[current].setType(Cell::Type::VISITED);
                 break;
 
             case Cell::Type::START:
                 break;
         }
+
+        int x = current % w;
+        int y = current / w;
 
         // Helper lambda to push neighbors
         auto tryPush = [&](int nx, int ny)
@@ -127,14 +131,13 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int start)
             if (nx < 0 || nx >= w || ny < 0 || ny >= h)
                 return;
 
-            int nIndex = ny * w + nx;
-            Cell::Type nType = grid[nIndex].getType();
+            int neighbour = ny * w + nx;
 
             // Only push if empty
-            if (nType == Cell::Type::EMPTY)
+            if (gridVec[neighbour].getType() == Cell::Type::EMPTY)
             {
-                grid[nIndex].setType(Cell::Type::QUEUED);
-                cellDeque.push_back({nx, ny});
+                gridVec[neighbour].setType(Cell::Type::QUEUED);
+                cellDeque.push_back(neighbour);
             }
         };
 
@@ -152,83 +155,107 @@ void Pathfinding::floodFill(std::vector<Cell>& grid, int w, int h, int start)
         inProgress = false;
 }
 
-void Pathfinding::bfsPathfind(std::vector<Cell>& gridVec, int w, int h, int start, int goal)
+void Pathfinding::bfsPath(std::vector<Cell>& gridVec, int w, int h, int start, int goal)
 {
+    // Initialize once (same as floodFill)
     if (!inProgress)
     {
+        cellDeque.clear();
+
         dist.assign(w * h, conf::inf);
         parent.assign(w * h, -1);
-        inProgress = true;
+
         dist[start] = 0;
-        cellQueue.push(start);
+
+        cellDeque.push_back(start);
+        inProgress = true;
     }
-
-
-    int dr[4] = {1, -1, 0, 0};
-    int dc[4] = {0, 0, 1, -1};
 
     if (!deltaThresholdReached())
         return;
 
     int processed = 0;
+    bool goalFound = false;
 
-    while (!cellQueue.empty() && processed < cellsThisFrame)
+    while (!cellDeque.empty() && processed < cellsThisFrame)
     {
-        int current = cellQueue.front();
-        cellQueue.pop();
+        int current = cellDeque.front();   // BFS → always front
+        cellDeque.pop_front();
+
+        Cell::Type type = gridVec[current].getType();
+
+        // Skip walls or already visited
+        if (type == Cell::Type::WALL ||
+            type == Cell::Type::VISITED ||
+            type == Cell::Type::PATH)
+        {
+            continue;
+        }
+
+        if (current != start && current != goal)
+            gridVec[current].setType(Cell::Type::VISITED);
 
         if (current == goal)
+        {
+            goalFound = true;
             break;
-
-        int r = current / w;
-        int c = current % w;
-
-        for (int i = 0; i < 4; i++) {
-            int nr = r + dr[i];
-            int nc = c + dc[i];
-
-            if (nr >= 0 && nc >= 0 && nr < h && nc < w) {
-
-                int neighbor = nr * w + nc;
-
-                // Optional: skip blocked cells
-                if (gridVec[neighbor].getType() == Cell::Type::WALL)
-                    continue;
-
-                if (dist[neighbor] == conf::inf) {
-                    dist[neighbor] = dist[current] + 1;
-                    parent[neighbor] = current;
-                    cellQueue.push(neighbor);
-                    gridVec[neighbor].setType(Cell::Type::QUEUED);
-                }
-            }
         }
-    
+
+        int x = current % w;
+        int y = current / w;
+
+        auto tryPush = [&](int nx, int ny)
+        {
+            if (nx < 0 || nx >= w || ny < 0 || ny >= h)
+                return;
+
+            int neighbor = ny * w + nx;
+
+            if (gridVec[neighbor].getType() == Cell::Type::WALL)
+                return;
+
+            if (dist[neighbor] == conf::inf)
+            {
+                dist[neighbor] = dist[current] + 1;
+                parent[neighbor] = current;
+
+                if (gridVec[neighbor].getType() != Cell::Type::GOAL)
+                    gridVec[neighbor].setType(Cell::Type::QUEUED);
+                cellDeque.push_back(neighbor);
+            }
+        };
+
+        tryPush(x + 1, y);
+        tryPush(x - 1, y);
+        tryPush(x, y + 1);
+        tryPush(x, y - 1);
+
         processed++;
     }
 
-    if (cellQueue.empty())
-        inProgress = false;
-    else
+    // If still processing next frame
+    if (!goalFound && !cellDeque.empty())
         return;
+
+    // Finished searching
+    inProgress = false;
 
     // If unreachable
-    if (dist[goal] == conf::inf) {
-        // std::cout << "No path found.\n";
+    if (dist[goal] == conf::inf)
         return;
-    }
 
     // Reconstruct path
-    std::vector<int> path;
-    for (int at = goal; at != -1; at = parent[at]) {
-        path.push_back(at);
+    int at = goal;
+    while (at != -1)
+    {
+        if (gridVec[at].getType() != Cell::Type::START &&
+            gridVec[at].getType() != Cell::Type::GOAL)
+        {
+            gridVec[at].setType(Cell::Type::PATH);
+        }
+
+        at = parent[at];
     }
-
-    // std::reverse(path.begin(), path.end());
-
-    // Print path
-    for (int idx : path)
-        gridVec[idx].setType(Cell::Type::VISITED);
 }
 
 bool Pathfinding::deltaThresholdReached()

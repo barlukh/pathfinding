@@ -32,7 +32,7 @@ class Pathfinding
         // Member Functions
         void exec(std::vector<Cell>& gridVec, int S2Key, int start, int goal);
         void floodFill(std::vector<Cell>& gridVec, int w, int h, int start);
-        void bfsPathfind(std::vector<Cell>& gridVec, int w, int h, int start, int goal);
+        void bfsPath(std::vector<Cell>& gridVec, int w, int h, int start, int goal);
         bool deltaThresholdReached();
 
     private:
@@ -40,7 +40,7 @@ class Pathfinding
         int currentAlgorithm;
         int cellsThisFrame;
         float deltaTimeAccumulator;
-        std::deque<std::pair<int, int>> cellDeque;
+        std::deque<int> cellDeque;
         std::queue<int> cellQueue;
         std::vector<int> dist;
         std::vector<int> parent;

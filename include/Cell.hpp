@@ -23,7 +23,8 @@ class Cell
             WALL,
             EMPTY,
             VISITED,
-            QUEUED
+            QUEUED,
+            PATH
         };
 
         // Constructors & Destructors

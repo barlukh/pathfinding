@@ -310,6 +310,9 @@ void UI::drawGrid(const std::vector<Cell>& gridVec, const Rectangle& gridRec)
             case Cell::Type::QUEUED:
                 color = RAYWHITE;
                 break;
+            case Cell::Type::PATH:
+                color = GREEN;
+                break;
             default:
                 color = WHITE;
                 break;
