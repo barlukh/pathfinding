@@ -295,7 +295,7 @@ void UI::drawGrid(const std::vector<Cell>& gridVec, const Rectangle& gridRec)
             case Cell::Type::START:
                 color = BLUE;
                 break;
-            case Cell::Type::FINISH:
+            case Cell::Type::GOAL:
                 color = RED;
                 break;
             case Cell::Type::WALL:

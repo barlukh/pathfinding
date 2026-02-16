@@ -3,7 +3,7 @@
 /*  File:       Grid.hpp                                                                */
 /*  Purpose:    Header file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/09                                                              */
+/*  Updated:    2026/02/16                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -32,7 +32,8 @@ class Grid
         ~Grid() = default;
 
         // Getters & Setters
-        int getStartIndex() const;
+        int getStart() const;
+        int getGoal() const;
         float getGridCellSize() const;
         const std::vector<Cell>& getGridVec() const;
         const Rectangle& getGridRec() const;
@@ -45,13 +46,13 @@ class Grid
         void placeSpecialCell(int x, int y, Cell::Type paintType);
         void drawBresenhamLine(int x0, int y0, int x1, int y1, Cell::Type paintType);
         void clearSpecialCell(Cell::Type paintType);
-        std::vector<Cell>& updateGridVec();
+        std::vector<Cell>& refGridVec();
         void partialClear();
         void fullClear();
 
     private:
         int startIndex;
-        int finishIndex;
+        int goalIndex;
         float gridCellSize;
         std::vector<Cell> gridVec;
         Rectangle gridRec;

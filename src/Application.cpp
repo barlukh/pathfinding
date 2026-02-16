@@ -105,7 +105,7 @@ void Application::run()
         // Execute algorithm
         if (ui.isExecModeOn())
         {
-            path.execute(ui.getS2Key(), grid.getStartIndex(), grid.updateGridVec());
+            path.exec(grid.refGridVec(), ui.getS2Key(), grid.getStart(), grid.getGoal());
             if (!path.isInProgress())
                 ui.setExecMode(false);
         }

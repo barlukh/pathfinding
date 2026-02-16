@@ -3,7 +3,7 @@
 /*  File:       Cell.hpp                                                                */
 /*  Purpose:    Header file for the Class Cell                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/13                                                              */
+/*  Updated:    2026/02/16                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -19,7 +19,7 @@ class Cell
         enum class Type
         {
             START,
-            FINISH,
+            GOAL,
             WALL,
             EMPTY,
             VISITED,

@@ -3,7 +3,7 @@
 /*  File:       Grid.cpp                                                                */
 /*  Purpose:    Source file for the Class Grid                                          */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/09                                                              */
+/*  Updated:    2026/02/16                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -21,7 +21,7 @@
 
 Grid::Grid(int gridCellsX, int gridCellsY)
 :   startIndex(-1),
-    finishIndex(-1),
+    goalIndex(-1),
     gridCellSize(0),
     gridVec(gridCellsX * gridCellsY),
     gridRec({0, 0, 0, 0})
@@ -32,9 +32,14 @@ Grid::Grid(int gridCellsX, int gridCellsY)
 // Getters & Setters
 //----------------------------------------------------------------------------------------
 
-int Grid::getStartIndex() const
+int Grid::getStart() const
 {
     return startIndex;
+}
+
+int Grid::getGoal() const
+{
+    return goalIndex;
 }
 
 float Grid::getGridCellSize() const
@@ -98,8 +103,8 @@ Grid::Pos Grid::paint(int s1Key, Vector2 mouseCur, Vector2 mouseLast)
 
     Cell::Type paintType = static_cast<Cell::Type>(s1Key - 1);
 
-    // Handle the uniqueness of the 'start' an 'finish' cells
-    if (paintType == Cell::Type::START || paintType == Cell::Type::FINISH)
+    // Handle the uniqueness of the 'start' an 'goal' cells
+    if (paintType == Cell::Type::START || paintType == Cell::Type::GOAL)
     {
         placeSpecialCell(gridX, gridY, paintType);
         return Pos::IN_BOUNDS;
@@ -124,12 +129,12 @@ void Grid::placeSpecialCell(int x, int y, Cell::Type paintType)
 {
     int newIndex = y * conf::gridCellsX + x;
 
-    if (paintType == Cell::Type::START && finishIndex == newIndex)
-        finishIndex = -1;
-    else if (paintType == Cell::Type::FINISH && startIndex == newIndex)
+    if (paintType == Cell::Type::START && goalIndex == newIndex)
+        goalIndex = -1;
+    else if (paintType == Cell::Type::GOAL && startIndex == newIndex)
         startIndex = -1;
 
-    int& index = (paintType == Cell::Type::START) ? startIndex : finishIndex;
+    int& index = (paintType == Cell::Type::START) ? startIndex : goalIndex;
     if (index != -1)
         gridVec[index].setType(Cell::Type::EMPTY);
 
@@ -173,11 +178,11 @@ void Grid::clearSpecialCell(Cell::Type paintType)
 {
     if (paintType == Cell::Type::START)
         startIndex = -1;
-    else if (paintType == Cell::Type::FINISH)
-        finishIndex = -1;
+    else if (paintType == Cell::Type::GOAL)
+        goalIndex = -1;
 }
 
-std::vector<Cell>& Grid::updateGridVec()
+std::vector<Cell>& Grid::refGridVec()
 {
     return gridVec;
 }

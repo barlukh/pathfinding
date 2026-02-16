@@ -18,6 +18,7 @@ namespace conf
 {
     // Pathfinding
     constexpr float cellsPerSecond = 500.0f;
+    constexpr int inf = 1e9;
 
     // FPS
     constexpr int fps = 1000;
@@ -39,7 +40,7 @@ namespace conf
     inline constexpr std::string_view step1 =
         "Step 1 (place cells):\n\n"
         "Press 1 to place Start\n"
-        "Press 2 to place Finish\n"
+        "Press 2 to place Goal\n"
         "Press 3 to place Wall\n"
         "Press 4 to reset Cell\n";
 
@@ -48,7 +49,7 @@ namespace conf
 
     inline constexpr std::array<std::string_view, 4> opts1 = {
         "Start",
-        "Finish",
+        "Goal",
         "Wall",
         "Empty"
     };
@@ -57,8 +58,8 @@ namespace conf
         "Step 2 (select algorithm):\n\n"
         "Press Q to use DFS FF\n"
         "Press W to use BFS FF\n"
-        "Press R to use Dijkstra's\n"
-        "Press E to use A*\n";
+        "Press R to use BFS PF\n"
+        "Press E to use A* PF\n";
 
     inline constexpr std::string_view selection2 =
         "Current selection: ";
@@ -66,7 +67,7 @@ namespace conf
     inline constexpr std::array<std::string_view, 4> opts2 = {
         "DFS FF",
         "BFS FF",
-        "Dijkstra",
+        "BFS PF",
         "A*"
     };
 
@@ -78,7 +79,7 @@ namespace conf
 
     inline constexpr std::string_view colorIndex =
         "- Start\n"
-        "- Finish\n"
+        "- Goal\n"
         "- Wall\n"
         "- Empty\n"
         "- Visited\n"
