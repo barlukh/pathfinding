@@ -3,7 +3,7 @@
 /*  File:       config.hpp                                                              */
 /*  Purpose:    Configuration values used by the application                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/13                                                              */
+/*  Updated:    2026/02/16                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -34,7 +34,7 @@ namespace conf
     // UI
     constexpr int textScaling = 65;
     constexpr int textSpacing = 5;
-    constexpr int offsetYScaling = 6;
+    constexpr int offsetYScaling = 7;
 
     inline constexpr std::string_view step1 =
         "Step 1 (place cells):\n\n"
@@ -57,8 +57,8 @@ namespace conf
         "Step 2 (select algorithm):\n\n"
         "Press Q to use DFS FF\n"
         "Press W to use BFS FF\n"
-        "Press E to use A*\n"
-        "Press R to use Dijkstra's\n";
+        "Press R to use Dijkstra's\n"
+        "Press E to use A*\n";
 
     inline constexpr std::string_view selection2 =
         "Current selection: ";
@@ -66,8 +66,8 @@ namespace conf
     inline constexpr std::array<std::string_view, 4> opts2 = {
         "DFS FF",
         "BFS FF",
-        "A*",
-        "Dijkstra"
+        "Dijkstra",
+        "A*"
     };
 
     inline constexpr std::string_view step3 =

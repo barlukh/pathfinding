@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/13                                                              */
+/*  Updated:    2026/02/16                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -123,14 +123,14 @@ void UI::calcUIPosValues(const Rectangle& gridRec)
     step1Pos.y = conf::halfPad;
 
     select1Pos.x = xOffset;
-    select1Pos.y = step1Pos.y + (gridRec.height / conf::offsetYScaling);
+    select1Pos.y = step1Pos.y + (gridRec.height / (conf::offsetYScaling / 1.1));
 
     // Set position of the 'Step 2' info panel
     step2Pos.x = xOffset;
     step2Pos.y = select1Pos.y + (gridRec.height / conf::offsetYScaling);
 
     select2Pos.x = xOffset;
-    select2Pos.y = step2Pos.y + (gridRec.height / conf::offsetYScaling);
+    select2Pos.y = step2Pos.y + (gridRec.height / (conf::offsetYScaling / 1.1));
 
     // Set position of the 'Step 3' info panel
     step3Pos.x = xOffset;
@@ -141,11 +141,11 @@ void UI::calcUIPosValues(const Rectangle& gridRec)
 
     // Set position of the color index text
     colorIndexPos.x = xOffset + textSize * 1.5;
-    colorIndexPos.y = step3Pos.y + (gridRec.height / conf::offsetYScaling);
+    colorIndexPos.y = step3Pos.y + (gridRec.height / (conf::offsetYScaling / 1.8));
 
     // Set position of the rectangle 0 index
     recIndex0.x = xOffset;
-    recIndex0.y = step3Pos.y + (gridRec.height / conf::offsetYScaling);
+    recIndex0.y = step3Pos.y + (gridRec.height / (conf::offsetYScaling / 1.8));
     recIndex0.height = textSize - 2;
     recIndex0.width = textSize - 2;
 

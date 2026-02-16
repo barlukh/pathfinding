@@ -3,7 +3,7 @@
 /*  File:       Application.cpp                                                         */
 /*  Purpose:    Source file for the Class Application                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/12                                                              */
+/*  Updated:    2026/02/16                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -55,8 +55,8 @@ Application::State Application::init()
     int monitor = GetCurrentMonitor();
     int screenWidth = GetMonitorWidth(monitor);
     int screenHeight = GetMonitorHeight(monitor);
-    int windowWidth = screenWidth / 1.2;
-    int windowHeight = screenHeight / 1.2;
+    int windowWidth = screenWidth / 1.1;
+    int windowHeight = screenHeight / 1.1;
     int windowPosX = (screenWidth - windowWidth) / 2;
     int windowPosY = (screenHeight - windowHeight) / 2;
 
