@@ -3,7 +3,7 @@
 /*  File:       config.hpp                                                              */
 /*  Purpose:    Configuration values used by the application                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/16                                                              */
+/*  Updated:    2026/02/17                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -83,7 +83,8 @@ namespace conf
         "- Wall\n"
         "- Empty\n"
         "- Visited\n"
-        "- Queued\n";
+        "- Queued\n"
+        "- Path\n";
 }
 
 #endif

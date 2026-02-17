@@ -3,7 +3,7 @@
 /*  File:       UI.hpp                                                                  */
 /*  Purpose:    Header file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/13                                                              */
+/*  Updated:    2026/02/17                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -65,6 +65,7 @@ class UI
         Rectangle recIndex3;
         Rectangle recIndex4;
         Rectangle recIndex5;
+        Rectangle recIndex6;
         Font font;
 };
 

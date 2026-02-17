@@ -3,7 +3,7 @@
 /*  File:       Cell.cpp                                                                */
 /*  Purpose:    Source file for the Class UI                                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/16                                                              */
+/*  Updated:    2026/02/17                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -43,6 +43,7 @@ UI::UI()
     recIndex3({0, 0, 0, 0}),
     recIndex4({0, 0, 0, 0}),
     recIndex5({0, 0, 0, 0}),
+    recIndex6({0, 0, 0, 0}),
     font(GetFontDefault())
 {}
 
@@ -141,11 +142,11 @@ void UI::calcUIPosValues(const Rectangle& gridRec)
 
     // Set position of the color index text
     colorIndexPos.x = xOffset + textSize * 1.5;
-    colorIndexPos.y = step3Pos.y + (gridRec.height / (conf::offsetYScaling / 1.8));
+    colorIndexPos.y = step3Pos.y + (gridRec.height / (conf::offsetYScaling / 1.6));
 
     // Set position of the rectangle 0 index
     recIndex0.x = xOffset;
-    recIndex0.y = step3Pos.y + (gridRec.height / (conf::offsetYScaling / 1.8));
+    recIndex0.y = step3Pos.y + (gridRec.height / (conf::offsetYScaling / 1.6));
     recIndex0.height = textSize - 2;
     recIndex0.width = textSize - 2;
 
@@ -178,6 +179,12 @@ void UI::calcUIPosValues(const Rectangle& gridRec)
     recIndex5.y = recIndex4.y + textSize + 2;
     recIndex5.height = textSize - 2;
     recIndex5.width = textSize - 2;
+
+    // Set position of the rectangle 6 index
+    recIndex6.x = xOffset;
+    recIndex6.y = recIndex5.y + textSize + 2;
+    recIndex6.height = textSize - 2;
+    recIndex6.width = textSize - 2;
 }
 
 void UI::detectInput()
@@ -272,6 +279,9 @@ void UI::drawUI()
 
     DrawRectangleRec(recIndex5, RAYWHITE);
     DrawRectangleLinesEx(recIndex5, 2.0f, BLACK);
+
+    DrawRectangleRec(recIndex6, GREEN);
+    DrawRectangleLinesEx(recIndex6, 2.0f, BLACK);
 
     // Draw color index text
     s = std::string(conf::colorIndex.data());
