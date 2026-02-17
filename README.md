@@ -38,7 +38,7 @@ Controls:
 - 1, 2, 3, 4 - Paint different cell on the grid
 - Q, W, E, R - Select an algorithm
 - Left mouse click + drag - Place cells
-- C - artially reset the grid
+- C - Partially reset the grid
 - V - Fully reset the grid
 - Space - Execute the visualizer
 - ESC - Exit
