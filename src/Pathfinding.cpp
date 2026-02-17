@@ -20,6 +20,7 @@
 
 Pathfinding::Pathfinding()
 :   inProgress(false),
+    goalFound(false),
     currentAlgorithm(0),
     cellsThisFrame(0),
     deltaTimeAccumulator(0.0f),
@@ -54,21 +55,21 @@ void Pathfinding::exec(std::vector<Cell>& gridVec, int S2Key, int start, int goa
 
     switch (currentAlgorithm)
     {
-    case 0:
-    case 1:
-    case 2:
-        floodFind(gridVec, conf::gridCellsX, conf::gridCellsY, start, goal);
-    default:
-        break;
+        case static_cast<int>(Algo::DFS_FF):
+        case static_cast<int>(Algo::BFS_FF):
+        case static_cast<int>(Algo::BFS_PF):
+            floodFind(gridVec, conf::gridCellsX, conf::gridCellsY, start, goal);
+        default:
+            break;
     }
 }
 
 void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start, int goal)
 {
-    // Push start cell if needed
+    // Push start cell if needed, initialize dist and parent vectors
     if (!inProgress)
     {
-        if (currentAlgorithm == 2)
+        if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
         {
             dist.assign(w * h, conf::inf);
             parent.assign(w * h, -1);
@@ -78,6 +79,7 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
         cellDeque.clear();
         cellDeque.push_back(start);
         inProgress = true;
+        goalFound = false;
     }
 
     // Only proceed if enough delta time has passed
@@ -85,14 +87,13 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
         return;
 
     int processed = 0;
-    bool goalFound = false;
 
     while (!cellDeque.empty() && processed < cellsThisFrame)
     {
         int current;
 
         // Select DFS or BFS
-        if (currentAlgorithm == 0)
+        if (currentAlgorithm == static_cast<int>(Algo::DFS_FF))
         {
             // DFS → take from back
             current = cellDeque.back();
@@ -105,26 +106,17 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
             cellDeque.pop_front();
         }
 
-        Cell::Type cellType = gridVec[current].getType();
+        Cell::Type t = gridVec[current].getType();
 
-        // Skip walls / already visited / goal, exclude start from changing state
-        switch (cellType)
+        // React only to queued and goal cells
+        if (t == Cell::Type::QUEUED)
+            gridVec[current].setType(Cell::Type::VISITED);
+        else if (t == Cell::Type::GOAL)
         {
-            case Cell::Type::GOAL:
+            if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
                 goalFound = true;
-                break;
-            case Cell::Type::WALL:
-            case Cell::Type::VISITED:
-            case Cell::Type::PATH:
+            else
                 continue;
-
-            case Cell::Type::EMPTY:
-            case Cell::Type::QUEUED:
-                gridVec[current].setType(Cell::Type::VISITED);
-                break;
-
-            case Cell::Type::START:
-                break;
         }
 
         int x = current % w;
@@ -138,7 +130,21 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
 
             int neighbour = ny * w + nx;
 
-            if (currentAlgorithm == 2)
+            Cell::Type t = gridVec[neighbour].getType();
+
+            // Push only empty and goal cells
+            if (t == Cell::Type::EMPTY || t == Cell::Type::GOAL)
+            {
+                if (t == Cell::Type::EMPTY)
+                    gridVec[neighbour].setType(Cell::Type::QUEUED);
+
+                cellDeque.push_back(neighbour);
+            }
+            else
+                return;
+
+            // Add information to dist and parent vectors when using BFS pathfinding
+            if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
             {
                 if (gridVec[neighbour].getType() == Cell::Type::WALL)
                     return;
@@ -147,16 +153,7 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
                 {
                     dist[neighbour] = dist[current] + 1;
                     parent[neighbour] = current;
-
-                    if (gridVec[neighbour].getType() != Cell::Type::GOAL)
-                        gridVec[neighbour].setType(Cell::Type::QUEUED);
-                    cellDeque.push_back(neighbour);
                 }
-            }
-            else if (gridVec[neighbour].getType() == Cell::Type::EMPTY)
-            {
-                gridVec[neighbour].setType(Cell::Type::QUEUED);
-                cellDeque.push_back(neighbour);
             }
         };
 
@@ -176,7 +173,7 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
     // Finished searching
     inProgress = false;
 
-    if (currentAlgorithm == 2)
+    if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
     {
         // If unreachable
         if (dist[goal] == conf::inf)
@@ -186,11 +183,9 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
         int at = goal;
         while (at != -1)
         {
-            if (gridVec[at].getType() != Cell::Type::START &&
-                gridVec[at].getType() != Cell::Type::GOAL)
-            {
+            Cell::Type t = gridVec[at].getType();
+            if (t != Cell::Type::START && t != Cell::Type::GOAL)
                 gridVec[at].setType(Cell::Type::PATH);
-            }
     
             at = parent[at];
         }

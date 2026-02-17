@@ -302,30 +302,30 @@ void UI::drawGrid(const std::vector<Cell>& gridVec, const Rectangle& gridRec)
 
             switch (type)
             {
-            case Cell::Type::START:
-                color = BLUE;
-                break;
-            case Cell::Type::GOAL:
-                color = RED;
-                break;
-            case Cell::Type::WALL:
-                color = BLACK;
-                break;
-            case Cell::Type::EMPTY:
-                color = LIGHTGRAY;
-                break;
-            case Cell::Type::VISITED:
-                color = YELLOW;
-                break;
-            case Cell::Type::QUEUED:
-                color = RAYWHITE;
-                break;
-            case Cell::Type::PATH:
-                color = GREEN;
-                break;
-            default:
-                color = WHITE;
-                break;
+                case Cell::Type::START:
+                    color = BLUE;
+                    break;
+                case Cell::Type::GOAL:
+                    color = RED;
+                    break;
+                case Cell::Type::WALL:
+                    color = BLACK;
+                    break;
+                case Cell::Type::EMPTY:
+                    color = LIGHTGRAY;
+                    break;
+                case Cell::Type::VISITED:
+                    color = YELLOW;
+                    break;
+                case Cell::Type::QUEUED:
+                    color = RAYWHITE;
+                    break;
+                case Cell::Type::PATH:
+                    color = GREEN;
+                    break;
+                default:
+                    color = WHITE;
+                    break;
             }
 
             DrawRectangleRec(cellRec, color);

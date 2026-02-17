@@ -18,6 +18,13 @@
 class Pathfinding
 {
     public:
+        enum class Algo
+        {
+            DFS_FF,
+            BFS_FF,
+            BFS_PF
+        };
+
         // Constructors & Destructors
         Pathfinding();
         Pathfinding(const Pathfinding& other) = delete;
@@ -34,6 +41,7 @@ class Pathfinding
 
     private:
         bool inProgress;
+        bool goalFound;
         int currentAlgorithm;
         int cellsThisFrame;
         float deltaTimeAccumulator;
