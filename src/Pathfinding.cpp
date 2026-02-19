@@ -276,19 +276,17 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
                 return;
 
             // Handle the push to the queue and mark the information about the path
-            int tentativeG = steps[current] + 1;
-
-            if (tentativeG < steps[neighbour])
+            if (steps[neighbour] == conf::inf)
             {
-                steps[neighbour] = tentativeG;
+                steps[neighbour] = steps[current] + 1;
                 parent[neighbour] = current;
 
-                int fScore = tentativeG + conf::weight * heuristic(neighbour, goal);
+                int fScore = steps[neighbour] + conf::weight * heuristic(neighbour, goal);
 
-                if (gridVec[neighbour].getType() != Cell::Type::GOAL)
+                if (t == Cell::Type::EMPTY)
                     gridVec[neighbour].setType(Cell::Type::QUEUED);
 
-                cellPQueue.push({ fScore, neighbour });
+                cellPQueue.push({fScore, neighbour});
             }
         };
 
