@@ -3,7 +3,7 @@
 /*  File:       Pathfinding.hpp                                                         */
 /*  Purpose:    Header file for the Class Pathfinding                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/17                                                              */
+/*  Updated:    2026/02/19                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -12,6 +12,8 @@
 
 #include "Cell.hpp"
 #include <deque>
+#include <queue>
+#include <utility>
 #include <vector>
 
 
@@ -22,7 +24,8 @@ class Pathfinding
         {
             DFS_FF,
             BFS_FF,
-            BFS_PF
+            BFS_PF,
+            A_STAR
         };
 
         // Constructors & Destructors
@@ -37,6 +40,7 @@ class Pathfinding
         // Member Functions
         void exec(std::vector<Cell>& gridVec, int S2Key, int start, int goal);
         void floodFind(std::vector<Cell>& gridVec, int w, int h, int start, int goal);
+        void aStar(std::vector<Cell>& gridVec, int w, int h, int start, int goal);
         bool deltaThresholdReached();
 
     private:
@@ -46,8 +50,12 @@ class Pathfinding
         int cellsThisFrame;
         float deltaTimeAccumulator;
         std::deque<int> cellDeque;
-        std::vector<int> dist;
+        std::vector<int> steps;
         std::vector<int> parent;
+        std::vector<bool> closed;
+
+        using Node = std::pair<int, int>; // (fScore, index)
+        std::priority_queue<Node, std::vector<Node>, std::greater<Node>> open;
 };
 
 #endif

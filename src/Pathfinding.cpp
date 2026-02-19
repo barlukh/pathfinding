@@ -3,14 +3,17 @@
 /*  File:       Pathfinding.cpp                                                         */
 /*  Purpose:    Source file for the Class Pathfinding                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/17                                                              */
+/*  Updated:    2026/02/19                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
 #include "Pathfinding.hpp"
 #include "Cell.hpp"
 #include "config.hpp"
+#include <algorithm>
 #include <deque>
+#include <queue>
+#include <utility>
 #include <vector>
 
 
@@ -25,8 +28,10 @@ Pathfinding::Pathfinding()
     cellsThisFrame(0),
     deltaTimeAccumulator(0.0f),
     cellDeque(),
-    dist(),
-    parent()
+    steps(),
+    parent(),
+    closed(),
+    open()
 {}
 
 
@@ -59,6 +64,10 @@ void Pathfinding::exec(std::vector<Cell>& gridVec, int S2Key, int start, int goa
         case static_cast<int>(Algo::BFS_FF):
         case static_cast<int>(Algo::BFS_PF):
             floodFind(gridVec, conf::gridCellsX, conf::gridCellsY, start, goal);
+            break;
+        case static_cast<int>(Algo::A_STAR):
+            aStar(gridVec, conf::gridCellsX, conf::gridCellsY, start, goal);
+            break;
         default:
             break;
     }
@@ -66,14 +75,14 @@ void Pathfinding::exec(std::vector<Cell>& gridVec, int S2Key, int start, int goa
 
 void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start, int goal)
 {
-    // Push start cell if needed, initialize dist and parent vectors
+    // Initialize vectors and push start cell
     if (!inProgress)
     {
         if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
         {
-            dist.assign(w * h, conf::inf);
+            steps.assign(w * h, conf::inf);
             parent.assign(w * h, -1);
-            dist[start] = 0;
+            steps[start] = 0;
         }
 
         cellDeque.clear();
@@ -122,7 +131,7 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
         int x = current % w;
         int y = current / w;
 
-        // Helper lambda to push neighbors
+        // Helper lambda to push neighbours
         auto tryPush = [&](int nx, int ny)
         {
             if (nx < 0 || nx >= w || ny < 0 || ny >= h)
@@ -143,25 +152,31 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
             else
                 return;
 
-            // Add information to dist and parent vectors when using BFS pathfinding
+            // Add information to steps and parent vectors when using BFS pathfinding
             if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
             {
                 if (gridVec[neighbour].getType() == Cell::Type::WALL)
                     return;
 
-                if (dist[neighbour] == conf::inf)
+                if (steps[neighbour] == conf::inf)
                 {
-                    dist[neighbour] = dist[current] + 1;
+                    steps[neighbour] = steps[current] + 1;
                     parent[neighbour] = current;
                 }
             }
         };
 
-        // Push 4 neighbors
+        // Push 4 neighbours
         tryPush(x + 1, y);
         tryPush(x - 1, y);
         tryPush(x, y + 1);
         tryPush(x, y - 1);
+
+        // Push also diagonal neigbours (warning: this allows diagonal wall skip)
+        // tryPush(x + 1, y + 1);
+        // tryPush(x - 1, y + 1);
+        // tryPush(x + 1, y - 1);
+        // tryPush(x - 1, y - 1);
 
         processed++;
     }
@@ -176,7 +191,7 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
     if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
     {
         // If unreachable
-        if (dist[goal] == conf::inf)
+        if (steps[goal] == conf::inf)
             return;
     
         // Reconstruct path
@@ -190,6 +205,116 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
             at = parent[at];
         }
     }
+}
+
+void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int goal)
+{
+    auto heuristic = [&](int a, int b)
+    {
+        int ax = a % w;
+        int ay = a / w;
+        int bx = b % w;
+        int by = b / w;
+
+        // Manhattan distance (for 4-direction grid)
+        return std::abs(ax - bx) + std::abs(ay - by);
+    };
+
+    // Initialize vectors and push start cell
+    if (!inProgress)
+    {
+        steps.assign(w * h, conf::inf);
+        parent.assign(w * h, -1);
+        closed.assign(w * h, false);
+        steps[start] = 0;
+
+        while (!open.empty())
+            open.pop();
+        open.push({heuristic(start, goal), start});
+
+        inProgress = true;
+    }
+
+    // Only proceed if enough delta time has passed
+    if (!deltaThresholdReached())
+        return;
+
+    int processed = 0;
+
+    while (!open.empty() && processed < cellsThisFrame)
+    {
+        int current = open.top().second;
+        open.pop();
+
+        if (closed[current])
+            continue;
+
+        Cell::Type t = gridVec[current].getType();
+
+        // React only to queued and goal cells
+        if (t == Cell::Type::QUEUED)
+            gridVec[current].setType(Cell::Type::VISITED);
+
+        if (current == goal)
+        {
+            // Reconstruct path
+            std::vector<int> path;
+            for (int at = goal; at != -1; at = parent[at])
+            {
+                path.push_back(at);
+
+                if (at != start && at != goal)
+                    gridVec[at].setType(Cell::Type::PATH);
+            }
+
+            std::reverse(path.begin(), path.end());
+            inProgress = false;
+            return;
+        }
+
+        closed[current] = true;
+
+        int cx = current % w;
+        int cy = current / w;
+
+        auto tryPush = [&](int nx, int ny)
+        {
+            if (nx < 0 || ny < 0 || nx >= w || ny >= h)
+                return;
+
+            int neighbour = ny * w + nx;
+
+            if (gridVec[neighbour].getType() == Cell::Type::WALL || closed[neighbour])
+                return;
+
+            int tentativeG = steps[current] + 1;
+
+            if (tentativeG < steps[neighbour])
+            {
+                steps[neighbour] = tentativeG;
+                parent[neighbour] = current;
+
+                int fScore = tentativeG + conf::weight * heuristic(neighbour, goal);
+
+                if (gridVec[neighbour].getType() != Cell::Type::GOAL)
+                    gridVec[neighbour].setType(Cell::Type::QUEUED);
+
+                open.push({ fScore, neighbour });
+            }
+        };
+
+        tryPush(cx + 1, cy);
+        tryPush(cx - 1, cy);
+        tryPush(cx, cy + 1);
+        tryPush(cx, cy - 1);
+
+        processed++;
+    }
+
+    if (!open.empty())
+        return;
+
+    inProgress = false;
 }
 
 bool Pathfinding::deltaThresholdReached()

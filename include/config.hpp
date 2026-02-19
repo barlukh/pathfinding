@@ -3,7 +3,7 @@
 /*  File:       config.hpp                                                              */
 /*  Purpose:    Configuration values used by the application                            */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/17                                                              */
+/*  Updated:    2026/02/19                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -17,8 +17,9 @@
 namespace conf
 {
     // Pathfinding
-    constexpr float cellsPerSecond = 500.0f;
+    constexpr float cellsPerSecond = 300.0f;
     constexpr int inf = 1e9;
+    constexpr int weight = 1;
 
     // FPS
     constexpr int fps = 1000;
