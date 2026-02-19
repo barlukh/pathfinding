@@ -69,9 +69,9 @@ BFS (Breadth-First Search) — uses FIFO behavior
 
 The only difference between them lies in how the next cell is retrieved from the container.
 
-Initially, I planned to implement Dijkstra’s algorithm. However, I realized that Dijkstra’s algorithm is primarily useful for weighted graphs. On a uniformly weighted grid, Dijkstra’s algorithm effectively behaves like BFS, with additional bookkeeping required to reconstruct the path.
+Initially, I planned to implement Dijkstra’s algorithm. However, I realized that Dijkstra’s algorithm is primarily useful for weighted graphs. On a uniformly weighted grid, Dijkstra’s algorithm effectively behaves like BFS, with additional bookkeeping required to reconstruct the path. Therefore, BFS was selected as one of the implemented algorithms.
 
-The last algorithm I implemented was the A* pathfinding algorithm, which uses heuristic-based search and a priority queue to retrieve the next cell with the lowest f-score, making it much more efficient compared to the BFS searching method.
+The last algorithm I implemented was the A* pathfinding algorithm, which uses heuristic-based search and a priority queue to retrieve the next cell with the lowest f-score, making it significantly more efficient than the BFS search method.
 
 
 ## License
