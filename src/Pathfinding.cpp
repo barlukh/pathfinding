@@ -30,8 +30,7 @@ Pathfinding::Pathfinding()
     cellDeque(),
     steps(),
     parent(),
-    closed(),
-    open()
+    cellPQueue()
 {}
 
 
@@ -144,28 +143,30 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
 
             Cell::Type t = gridVec[neighbour].getType();
 
-            // Push only empty and goal cells
-            if (t == Cell::Type::EMPTY || t == Cell::Type::GOAL)
+            // Process only empty and goal cells
+            if (t != Cell::Type::EMPTY && t != Cell::Type::GOAL)
+                return;
+
+            // Handle the push to the queue and mark the information about the path
+            if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
+            {
+                if (steps[neighbour] == conf::inf)
+                {
+                    steps[neighbour] = steps[current] + 1;
+                    parent[neighbour] = current;
+
+                    if (t == Cell::Type::EMPTY)
+                        gridVec[neighbour].setType(Cell::Type::QUEUED);
+
+                    cellDeque.push_back(neighbour);
+                }
+            }
+            else
             {
                 if (t == Cell::Type::EMPTY)
                     gridVec[neighbour].setType(Cell::Type::QUEUED);
 
                 cellDeque.push_back(neighbour);
-            }
-            else
-                return;
-
-            // Add information to steps and parent vectors when using BFS pathfinding
-            if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
-            {
-                if (gridVec[neighbour].getType() == Cell::Type::WALL)
-                    return;
-
-                if (steps[neighbour] == conf::inf)
-                {
-                    steps[neighbour] = steps[current] + 1;
-                    parent[neighbour] = current;
-                }
             }
         };
 
@@ -225,12 +226,11 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
     {
         steps.assign(w * h, conf::inf);
         parent.assign(w * h, -1);
-        closed.assign(w * h, false);
         steps[start] = 0;
 
-        while (!open.empty())
-            open.pop();
-        open.push({heuristic(start, goal), start});
+        while (!cellPQueue.empty())
+            cellPQueue.pop();
+        cellPQueue.push({heuristic(start, goal), start});
 
         inProgress = true;
         goalFound = false;
@@ -242,13 +242,10 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
 
     int processed = 0;
 
-    while (!open.empty() && processed < cellsThisFrame)
+    while (!cellPQueue.empty() && processed < cellsThisFrame)
     {
-        int current = open.top().second;
-        open.pop();
-
-        if (closed[current])
-            continue;
+        int current = cellPQueue.top().second;
+        cellPQueue.pop();
 
         Cell::Type t = gridVec[current].getType();
 
@@ -261,8 +258,6 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
             break;
         }
 
-        closed[current] = true;
-
         int x = current % w;
         int y = current / w;
 
@@ -274,9 +269,13 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
 
             int neighbour = ny * w + nx;
 
-            if (gridVec[neighbour].getType() == Cell::Type::WALL || closed[neighbour])
+            Cell::Type t = gridVec[neighbour].getType();
+
+            // Process only empty and goal cells
+            if (t != Cell::Type::EMPTY && t != Cell::Type::GOAL)
                 return;
 
+            // Handle the push to the queue and mark the information about the path
             int tentativeG = steps[current] + 1;
 
             if (tentativeG < steps[neighbour])
@@ -289,7 +288,7 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
                 if (gridVec[neighbour].getType() != Cell::Type::GOAL)
                     gridVec[neighbour].setType(Cell::Type::QUEUED);
 
-                open.push({ fScore, neighbour });
+                cellPQueue.push({ fScore, neighbour });
             }
         };
 
@@ -303,7 +302,7 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
     }
 
     // If still processing next frame
-    if (!goalFound && !open.empty())
+    if (!goalFound && !cellPQueue.empty())
         return;
 
     // Finished searching

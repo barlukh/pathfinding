@@ -52,10 +52,9 @@ class Pathfinding
         std::deque<int> cellDeque;
         std::vector<int> steps;
         std::vector<int> parent;
-        std::vector<bool> closed;
 
         using Node = std::pair<int, int>; // (fScore, index)
-        std::priority_queue<Node, std::vector<Node>, std::greater<Node>> open;
+        std::priority_queue<Node, std::vector<Node>, std::greater<Node>> cellPQueue;
 };
 
 #endif
