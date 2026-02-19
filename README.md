@@ -5,7 +5,11 @@
 </p>
 
 
-A pathfinding visualization tool powered by [raylib](https://www.raylib.com/). This is an educational project designed to visually explore different grid-traversing algorithms. The currently implemented algorithms are: Depth-First Search flood fill, Breadth-First Search flood fill, and a Breadth-First Search pathfinder for finding the shortest path between two points. I am currently working on adding a version of the A* algorithm (work in progress).
+A pathfinding visualization tool powered by [raylib](https://www.raylib.com/). This is an educational project designed to visually explore different grid-traversing algorithms. The currently implemented algorithms are:
+- Depth-First Search flood fill
+- Breadth-First Search flood fill
+- Breadth-First Search pathfinding algorithm
+- A* pathfinding algorithm
 
 
 ## Features
@@ -45,23 +49,6 @@ Controls:
 - Various variables can be modified in the config.hpp (advanced users only)
 
 
-## License
-
-**This project** is licensed under the [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
-
-**Raylib** is licensed under the [zlib/libpng license](https://www.raylib.com/license.html), which is compatible with GPL.
-
-When distributing this project, please ensure:
-- You include the full text of the GPLv3 license.
-- You retain raylib’s original license notice.
-- You clearly mark any modifications made to the original code.
-
-
-## Credits
-
-- [raylib](https://www.raylib.com/) raylib © 2013–present Ramon Santamaria
-
-
 ## Comments
 
 ### About the Project
@@ -82,26 +69,48 @@ BFS (Breadth-First Search) — uses FIFO behavior
 
 The only difference between them lies in how the next cell is retrieved from the container.
 
-Initially, I planned to implement Dijkstra’s algorithm. However, I realized that Dijkstra’s algorithm is primarily useful for weighted graphs. On a uniformly weighted grid, Dijkstra’s algorithm effectively behaves like BFS with additional bookkeeping to reconstruct the path. This is how the shortest path is determined in the current implementation.
+Initially, I planned to implement Dijkstra’s algorithm. However, I realized that Dijkstra’s algorithm is primarily useful for weighted graphs. On a uniformly weighted grid, Dijkstra’s algorithm effectively behaves like BFS, with additional bookkeeping required to reconstruct the path.
 
-### Work in Progress
+The last algorithm I implemented was the A* pathfinding algorithm, which uses heuristic-based search and a priority queue to retrieve the next cell with the lowest f-score, making it much more efficient compared to the BFS searching method.
 
-I am currently working on implementing the A* pathfinding algorithm to extend the project further and compare heuristic-based searching with uninformed search strategies.
+
+## License
+
+**This project** is licensed under the [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
+**Raylib** is licensed under the [zlib/libpng license](https://www.raylib.com/license.html), which is compatible with GPL.
+
+When distributing this project, please ensure:
+- You include the full text of the GPLv3 license.
+- You retain raylib’s original license notice.
+- You clearly mark any modifications made to the original code.
+
+
+## Credits
+
+- [raylib](https://www.raylib.com/) raylib © 2013–present Ramon Santamaria
 
 
 ## Screenshots
 
+### Breadth-First Search algorithm (pattern #1)
 <p align="center">
   <img src="screenshots/screenshot1.png" style="max-width:100%; height:auto;" alt="screenshot1"/>
 </p>
+
+### A* algorithm (pattern #1)
 
 <p align="center">
   <img src="screenshots/screenshot2.png" style="max-width:100%; height:auto;" alt="screenshot2"/>
 </p>
 
+### Breadth-First Search algorithm (pattern #2)
+
 <p align="center">
   <img src="screenshots/screenshot3.png" style="max-width:100%; height:auto;" alt="screenshot3"/>
 </p>
+
+### A* algorithm (pattern #2)
 
 <p align="center">
   <img src="screenshots/screenshot4.png" style="max-width:100%; height:auto;" alt="screenshot4"/>
