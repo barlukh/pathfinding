@@ -3,7 +3,7 @@
 /*  File:       Pathfinding.cpp                                                         */
 /*  Purpose:    Source file for the Class Pathfinding                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/19                                                              */
+/*  Updated:    2026/02/20                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -28,7 +28,7 @@ Pathfinding::Pathfinding()
     cellsThisFrame(0),
     deltaTimeAccumulator(0.0f),
     cellDeque(),
-    steps(),
+    gScore(),
     parent(),
     cellPQueue()
 {}
@@ -79,9 +79,9 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
     {
         if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
         {
-            steps.assign(w * h, conf::inf);
+            gScore.assign(w * h, conf::inf);
             parent.assign(w * h, -1);
-            steps[start] = 0;
+            gScore[start] = 0;
         }
 
         cellDeque.clear();
@@ -150,9 +150,9 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
             // Handle the push to the queue and mark the information about the path
             if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
             {
-                if (steps[neighbour] == conf::inf)
+                if (gScore[neighbour] == conf::inf)
                 {
-                    steps[neighbour] = steps[current] + 1;
+                    gScore[neighbour] = gScore[current] + 1;
                     parent[neighbour] = current;
 
                     if (t == Cell::Type::EMPTY)
@@ -195,7 +195,7 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
     if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
     {
         // If unreachable
-        if (steps[goal] == conf::inf)
+        if (gScore[goal] == conf::inf)
             return;
     
         // Reconstruct path
@@ -224,9 +224,9 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
     // Initialize vectors and push start cell
     if (!inProgress)
     {
-        steps.assign(w * h, conf::inf);
+        gScore.assign(w * h, conf::inf);
         parent.assign(w * h, -1);
-        steps[start] = 0;
+        gScore[start] = 0;
 
         while (!cellPQueue.empty())
             cellPQueue.pop();
@@ -276,12 +276,12 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
                 return;
 
             // Handle the push to the queue and mark the information about the path
-            if (steps[neighbour] == conf::inf)
+            if (gScore[neighbour] == conf::inf)
             {
-                steps[neighbour] = steps[current] + 1;
+                gScore[neighbour] = gScore[current] + 1;
                 parent[neighbour] = current;
 
-                int fScore = steps[neighbour] + conf::weight * heuristic(neighbour, goal);
+                int fScore = gScore[neighbour] + conf::weight * heuristic(neighbour, goal);
 
                 if (t == Cell::Type::EMPTY)
                     gridVec[neighbour].setType(Cell::Type::QUEUED);
@@ -307,7 +307,7 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
     inProgress = false;
 
     // If unreachable
-    if (steps[goal] == conf::inf)
+    if (gScore[goal] == conf::inf)
         return;
 
     // Reconstruct path

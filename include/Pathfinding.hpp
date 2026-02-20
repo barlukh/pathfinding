@@ -3,7 +3,7 @@
 /*  File:       Pathfinding.hpp                                                         */
 /*  Purpose:    Header file for the Class Pathfinding                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/19                                                              */
+/*  Updated:    2026/02/20                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -50,7 +50,7 @@ class Pathfinding
         int cellsThisFrame;
         float deltaTimeAccumulator;
         std::deque<int> cellDeque;
-        std::vector<int> steps;
+        std::vector<int> gScore;
         std::vector<int> parent;
 
         using Node = std::pair<int, int>; // (fScore, index)
