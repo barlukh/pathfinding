@@ -3,7 +3,7 @@
 /*  File:       Pathfinding.cpp                                                         */
 /*  Purpose:    Source file for the Class Pathfinding                                   */
 /*  Author:     barlukh (Boris Gazur)                                                   */
-/*  Updated:    2026/02/20                                                              */
+/*  Updated:    2026/02/26                                                              */
 /*                                                                                      */
 /* ************************************************************************************ */
 
@@ -133,15 +133,15 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
         int x = current % w;
         int y = current / w;
 
-        // Helper lambda to push neighbours
+        // Helper lambda to push neighbors
         auto tryPush = [&](int nx, int ny)
         {
             if (nx < 0 || nx >= w || ny < 0 || ny >= h)
                 return;
 
-            int neighbour = ny * w + nx;
+            int neighbor = ny * w + nx;
 
-            Cell::Type t = gridVec[neighbour].getType();
+            Cell::Type t = gridVec[neighbor].getType();
 
             // Process only empty and goal cells
             if (t != Cell::Type::EMPTY && t != Cell::Type::GOAL)
@@ -150,27 +150,27 @@ void Pathfinding::floodFind(std::vector<Cell>& gridVec, int w, int h, int start,
             // Handle the push to the queue and mark the information about the path
             if (currentAlgorithm == static_cast<int>(Algo::BFS_PF))
             {
-                if (gScore[neighbour] == conf::inf)
+                if (gScore[neighbor] == conf::inf)
                 {
-                    gScore[neighbour] = gScore[current] + 1;
-                    parent[neighbour] = current;
+                    gScore[neighbor] = gScore[current] + 1;
+                    parent[neighbor] = current;
 
                     if (t == Cell::Type::EMPTY)
-                        gridVec[neighbour].setType(Cell::Type::QUEUED);
+                        gridVec[neighbor].setType(Cell::Type::QUEUED);
 
-                    cellDeque.push_back(neighbour);
+                    cellDeque.push_back(neighbor);
                 }
             }
             else
             {
                 if (t == Cell::Type::EMPTY)
-                    gridVec[neighbour].setType(Cell::Type::QUEUED);
+                    gridVec[neighbor].setType(Cell::Type::QUEUED);
 
-                cellDeque.push_back(neighbour);
+                cellDeque.push_back(neighbor);
             }
         };
 
-        // Push 4 neighbours
+        // Push 4 neighbors
         tryPush(x + 1, y);
         tryPush(x - 1, y);
         tryPush(x, y + 1);
@@ -261,36 +261,36 @@ void Pathfinding::aStar(std::vector<Cell>& gridVec, int w, int h, int start, int
         int x = current % w;
         int y = current / w;
 
-        // Helper lambda to push neighbours
+        // Helper lambda to push neighbors
         auto tryPush = [&](int nx, int ny)
         {
             if (nx < 0 || ny < 0 || nx >= w || ny >= h)
                 return;
 
-            int neighbour = ny * w + nx;
+            int neighbor = ny * w + nx;
 
-            Cell::Type t = gridVec[neighbour].getType();
+            Cell::Type t = gridVec[neighbor].getType();
 
             // Process only empty and goal cells
             if (t != Cell::Type::EMPTY && t != Cell::Type::GOAL)
                 return;
 
             // Handle the push to the queue and mark the information about the path
-            if (gScore[neighbour] == conf::inf)
+            if (gScore[neighbor] == conf::inf)
             {
-                gScore[neighbour] = gScore[current] + 1;
-                parent[neighbour] = current;
+                gScore[neighbor] = gScore[current] + 1;
+                parent[neighbor] = current;
 
-                int fScore = gScore[neighbour] + conf::weight * heuristic(neighbour, goal);
+                int fScore = gScore[neighbor] + conf::weight * heuristic(neighbor, goal);
 
                 if (t == Cell::Type::EMPTY)
-                    gridVec[neighbour].setType(Cell::Type::QUEUED);
+                    gridVec[neighbor].setType(Cell::Type::QUEUED);
 
-                cellPQueue.push({fScore, neighbour});
+                cellPQueue.push({fScore, neighbor});
             }
         };
 
-        // Push 4 neighbours
+        // Push 4 neighbors
         tryPush(x + 1, y);
         tryPush(x - 1, y);
         tryPush(x, y + 1);
