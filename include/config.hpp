@@ -59,8 +59,8 @@ namespace conf
         "Step 2 (select algorithm):\n\n"
         "Press Q to use DFS FF\n"
         "Press W to use BFS FF\n"
-        "Press R to use BFS PF\n"
-        "Press E to use A* PF\n";
+        "Press E to use BFS PF\n"
+        "Press R to use A* PF\n";
 
     inline constexpr std::string_view selection2 =
         "Current selection: ";
